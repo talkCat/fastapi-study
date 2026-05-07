@@ -9,7 +9,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=sqlite:///./app.db
+      - DATABASE_URL=mysql+pymysql://root:123456@10.20.40.26:3306/fastapi_study?charset=utf8mb4
       - SECRET_KEY=dev-secret-key
       - DEBUG=true
     volumes:

@@ -7,26 +7,9 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/fastapi_db
+      - DATABASE_URL=mysql+pymysql://root:123456@10.20.40.26:3306/fastapi_study?charset=utf8mb4
       - SECRET_KEY=your-production-secret-key
       - DEBUG=false
-    depends_on:
-      - db
     volumes:
       - ./app:/app
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
-
-  db:
-    image: postgres:15-alpine
-    container_name: fastapi-db
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=fastapi_db
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
-volumes:
-  postgres_data:
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
