@@ -15,6 +15,7 @@ fastapi-study/
 │   │   └── routers/            # API路由
 │   │       ├── __init__.py
 │   │       ├── auth.py         # 认证接口
+│   │       ├── learning.py     # 异步与高并发学习接口
 │   │       ├── users.py        # 用户接口
 │   │       └── items.py        # 物品接口
 │   ├── core/
@@ -28,16 +29,20 @@ fastapi-study/
 │   │   └── item.py
 │   ├── schemas/                # Pydantic模型
 │   │   ├── __init__.py
+│   │   ├── learning.py
 │   │   ├── user.py
 │   │   └── item.py
 │   ├── services/               # 业务逻辑层
 │   │   ├── __init__.py
+│   │   ├── learning.py
 │   │   ├── user.py
 │   │   └── item.py
 │   └── db/                     # 数据库层
 │       ├── __init__.py
 │       ├── database.py
 │       └── repository.py
+├── docs/
+│   └── async_concurrency_guide.md
 ├── .env                        # 环境变量（本地）
 ├── .env.example                # 环境变量模板
 ├── .gitignore
@@ -136,6 +141,18 @@ database (数据库)    - 数据持久化
 | PUT | /api/v1/items/{id} | 更新物品 |
 | DELETE | /api/v1/items/{id} | 删除物品 |
 
+### 异步与高并发学习接口
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| GET | /api/v1/learning/best-practices | 查看异步与高并发最佳实践总结 |
+| GET | /api/v1/learning/async-io-demo | 演示 IO 密集任务的异步写法 |
+| GET | /api/v1/learning/threadpool-demo | 演示阻塞任务如何下沉线程池 |
+| POST | /api/v1/learning/background-task-demo | 演示请求返回后执行短后台任务 |
+| POST | /api/v1/learning/bounded-concurrency-demo | 演示受控并发与限流 |
+| POST | /api/v1/learning/cpu-task-demo | 提交 CPU 密集任务并立即返回 task_id |
+| GET | /api/v1/learning/cpu-task-demo/{task_id} | 查询 CPU 密集任务状态与结果 |
+
 ## Make 命令
 
 ```bash
@@ -159,16 +176,35 @@ make clean        # 清理缓存
 3. 在 `app/services/` 创建业务逻辑
 4. 在 `app/api/routers/` 创建 API 路由
 
+### 异步与高并发学习建议
+
+- 先看 [docs/async_concurrency_guide.md](docs/async_concurrency_guide.md)
+- 再通过 `/docs` 调用 `learning` 分组下的 7 个示例接口
+- 重点对比 `async-io-demo` 和 `threadpool-demo` 的适用场景
+- 理解 `bounded-concurrency-demo` 中 `max_concurrency` 的作用，再迁移到真实数据库/第三方 API 调用中
+- 最后体验 `cpu-task-demo` 的“提交后轮询”模式，理解为什么 CPU 密集任务不应阻塞请求链路
+
+### 学习模块测试
+
+- 学习模块接口测试文件：`tests/test_learning_endpoints.py`
+- 运行命令：`python -m unittest tests.test_learning_endpoints`
+
 ### 环境变量说明
 
 | 变量 | 说明 | 默认值 |
 |------|------|--------|
 | APP_NAME | 应用名称 | FastAPI学习项目 |
 | DEBUG | 调试模式 | false |
+| AUTH_ENABLED | 是否启用接口鉴权 | true |
 | DATABASE_URL | 数据库连接 | sqlite:///./app.db |
 | SECRET_KEY | JWT密钥 | - |
 | HOST | 监听地址 | 0.0.0.0 |
 | PORT | 监听端口 | 8000 |
+
+鉴权开关说明：
+
+- `AUTH_ENABLED=true`：按 JWT 正常鉴权
+- `AUTH_ENABLED=false`：跳过 JWT 校验，受保护接口会使用系统中首个激活用户作为默认身份执行，并以管理员权限视角放行
 
 ## License
 
@@ -181,5 +217,25 @@ uv pip install -r requirements.txt
 ```
 运行项目
 ```bash
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+uvicorn app.main:app --reload --host 0.0.0.0 --port 18003
+```
+
+## 常见问题
+
+### 1. 启动时报 `No module named '_sqlite3'`
+
+原因：
+
+- 当前 Python 环境没有编译 `sqlite3` 模块
+- 项目默认数据库是 SQLite，所以初始化数据库连接时会失败
+
+处理方式：
+
+1. 使用带 `sqlite3` 模块的 Python 环境
+2. 或复制 `.env.example` 为 `.env`，把 `DATABASE_URL` 配置成 MySQL 连接串后再启动
+
+示例：
+
+```bash
+cp .env.example .env
 ```
