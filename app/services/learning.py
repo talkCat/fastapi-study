@@ -1,8 +1,9 @@
 import asyncio
 import time
-from concurrent.futures import Future, ProcessPoolExecutor
-from datetime import datetime
+from concurrent.futures import Future, ProcessPoolExecutor, ThreadPoolExecutor
+from datetime import datetime, timezone
 from functools import partial
+from multiprocessing import get_context
 from pathlib import Path
 from threading import Lock
 from threading import current_thread
@@ -12,6 +13,8 @@ from fastapi import BackgroundTasks
 from starlette.concurrency import run_in_threadpool
 
 from app.core.exceptions import NotFoundException
+from app.core.executors import get_shared_thread_pool
+from app.core.config import settings
 from app.schemas.learning import (
     AsyncIODemoResponse,
     BackgroundTaskResponse,
@@ -22,10 +25,19 @@ from app.schemas.learning import (
     CpuTaskResult,
     CpuTaskStatusResponse,
     CpuTaskSubmitResponse,
+    CustomThreadpoolDemoResponse,
+    KnowledgeChunkPreview,
+    KnowledgeIngestStatusResponse,
+    KnowledgeIngestSubmitResponse,
+    SharedThreadpoolDemoResponse,
     ThreadpoolDemoResponse,
 )
 
 LEARNING_LOG_PATH = Path("/tmp/fastapi-study-learning.log")
+
+
+def _utc_now() -> datetime:
+    return datetime.now(timezone.utc)
 
 
 def _count_primes(iterations: int) -> dict:
@@ -53,11 +65,59 @@ def _count_primes(iterations: int) -> dict:
     }
 
 
+def _simulate_pdf_chunking(pdf_bytes: bytes, source_name: str, chunk_size: int) -> dict:
+    started_at = time.perf_counter()
+    decoded_text = pdf_bytes.decode("utf-8", errors="ignore").replace("\x00", " ")
+    if not decoded_text.strip():
+        decoded_text = f"Simulated content extracted from {source_name}. " * 20
+    decoded_text = decoded_text.replace("\r\n", "\n")
+
+    page_candidates = [page.strip() for page in decoded_text.split("\f") if page.strip()]
+    if not page_candidates:
+        normalized_text = " ".join(decoded_text.split())
+        page_window = max(chunk_size * 2, 400)
+        page_candidates = [
+            normalized_text[index:index + page_window]
+            for index in range(0, len(normalized_text), page_window)
+            if normalized_text[index:index + page_window].strip()
+        ]
+
+    chunks = []
+    global_chunk_no = 1
+    for page_no, page_text in enumerate(page_candidates, start=1):
+        normalized_page_text = " ".join(page_text.split())
+        for index in range(0, len(normalized_page_text), chunk_size):
+            content = normalized_page_text[index:index + chunk_size].strip()
+            if not content:
+                continue
+            chunks.append(
+                {
+                    "page_no": page_no,
+                    "chunk_no": global_chunk_no,
+                    "char_count": len(content),
+                    "preview": content[:80],
+                    "content": content,
+                }
+            )
+            global_chunk_no += 1
+
+    duration_ms = (time.perf_counter() - started_at) * 1000
+    return {
+        "source_name": source_name,
+        "total_pages": len(page_candidates),
+        "total_chunks": len(chunks),
+        "chunks": chunks,
+        "duration_ms": round(duration_ms, 2),
+    }
+
+
 class LearningService:
     def __init__(self):
         self._cpu_executor: ProcessPoolExecutor | None = None
         self._cpu_tasks: dict[str, dict] = {}
         self._cpu_tasks_lock = Lock()
+        self._knowledge_tasks: dict[str, dict] = {}
+        self._knowledge_tasks_lock = Lock()
 
     async def async_io_demo(self, delay_ms: int) -> AsyncIODemoResponse:
         started_at = time.perf_counter()
@@ -82,6 +142,49 @@ class LearningService:
             elapsed_ms=round(elapsed_ms, 2),
             worker_thread=worker_thread,
             key_point="阻塞代码不要直接写进 async def，应该下沉到线程池，避免卡住事件循环。"
+        )
+
+    def custom_threadpool_demo(
+        self,
+        delay_ms: int,
+        max_workers: int,
+        task_count: int
+    ) -> CustomThreadpoolDemoResponse:
+        started_at = time.perf_counter()
+        with ThreadPoolExecutor(max_workers=max_workers, thread_name_prefix="learning-threadpool") as executor:
+            futures = [executor.submit(self._blocking_sleep, delay_ms) for _ in range(task_count)]
+            worker_threads = [future.result() for future in futures]
+        elapsed_ms = (time.perf_counter() - started_at) * 1000
+        return CustomThreadpoolDemoResponse(
+            pattern="custom-threadpool",
+            max_workers=max_workers,
+            task_count=task_count,
+            delay_ms=delay_ms,
+            elapsed_ms=round(elapsed_ms, 2),
+            worker_threads=worker_threads,
+            unique_workers=len(set(worker_threads)),
+            key_point="ThreadPoolExecutor 适合你自己明确知道要开多少线程的场景；它不是异步 IO 的替代品，而是阻塞任务的隔离层。"
+        )
+
+    def shared_threadpool_demo(
+        self,
+        delay_ms: int,
+        task_count: int
+    ) -> SharedThreadpoolDemoResponse:
+        started_at = time.perf_counter()
+        executor = get_shared_thread_pool()
+        futures = [executor.submit(self._blocking_sleep, delay_ms) for _ in range(task_count)]
+        worker_threads = [future.result() for future in futures]
+        elapsed_ms = (time.perf_counter() - started_at) * 1000
+        return SharedThreadpoolDemoResponse(
+            pattern="shared-threadpool",
+            configured_max_workers=settings.thread_pool_max_workers,
+            task_count=task_count,
+            delay_ms=delay_ms,
+            elapsed_ms=round(elapsed_ms, 2),
+            worker_threads=worker_threads,
+            unique_workers=len(set(worker_threads)),
+            key_point="共享线程池更像 Java 的 ExecutorService 单例 Bean，适合全局复用并统一控制线程数。"
         )
 
     def enqueue_background_task(self, background_tasks: BackgroundTasks, note: str) -> BackgroundTaskResponse:
@@ -135,7 +238,7 @@ class LearningService:
                 "pattern": "cpu-task-queue",
                 "status": "queued",
                 "iterations": iterations,
-                "created_at": datetime.utcnow(),
+                "created_at": _utc_now(),
                 "completed_at": None,
                 "result": None,
                 "error": None,
@@ -156,6 +259,86 @@ class LearningService:
             poll_path=f"/api/v1/learning/cpu-task-demo/{task_id}",
             key_point="CPU 密集任务不要阻塞请求线程；更合理的方式是快速提交任务，再轮询或回调获取结果。"
         )
+
+    def submit_knowledge_ingest_task(
+        self,
+        source_name: str,
+        file_bytes: bytes,
+        chunk_size: int,
+        batch_size: int
+    ) -> KnowledgeIngestSubmitResponse:
+        task_id = uuid4().hex
+        future = get_shared_thread_pool().submit(
+            self._run_knowledge_ingest_pipeline,
+            task_id,
+            source_name,
+            file_bytes,
+            chunk_size,
+            batch_size
+        )
+
+        with self._knowledge_tasks_lock:
+            self._knowledge_tasks[task_id] = {
+                "pattern": "knowledge-ingest-pipeline",
+                "status": "queued",
+                "stage": "queued",
+                "source_name": source_name,
+                "chunk_size": chunk_size,
+                "batch_size": batch_size,
+                "created_at": _utc_now(),
+                "completed_at": None,
+                "total_pages": 0,
+                "total_chunks": 0,
+                "es_documents_indexed": 0,
+                "graph_nodes_written": 0,
+                "graph_edges_written": 0,
+                "preview_chunks": [],
+                "error": None,
+                "future": future,
+            }
+
+        future.add_done_callback(partial(self._finalize_knowledge_ingest_task, task_id))
+
+        return KnowledgeIngestSubmitResponse(
+            pattern="knowledge-ingest-pipeline",
+            task_id=task_id,
+            status="queued",
+            source_name=source_name,
+            poll_path=f"/api/v1/learning/knowledge-ingest-demo/{task_id}",
+            key_point="真实项目里上传接口只负责接收文件并返回 task_id，解析/切片/写 ES/写图谱都应放在后台流水线中。"
+        )
+
+    def get_knowledge_ingest_status(self, task_id: str) -> KnowledgeIngestStatusResponse:
+        with self._knowledge_tasks_lock:
+            task = self._knowledge_tasks.get(task_id)
+            if task is None:
+                raise NotFoundException(detail="知识入库任务不存在")
+            future = task.get("future")
+            if task["status"] == "queued" and future is not None and future.running():
+                task["status"] = "running"
+                task["stage"] = "parsing_pdf"
+
+            response_payload = {
+                "pattern": task["pattern"],
+                "task_id": task_id,
+                "status": task["status"],
+                "stage": task["stage"],
+                "source_name": task["source_name"],
+                "chunk_size": task["chunk_size"],
+                "batch_size": task["batch_size"],
+                "created_at": task["created_at"],
+                "completed_at": task["completed_at"],
+                "total_pages": task["total_pages"],
+                "total_chunks": task["total_chunks"],
+                "es_documents_indexed": task["es_documents_indexed"],
+                "graph_nodes_written": task["graph_nodes_written"],
+                "graph_edges_written": task["graph_edges_written"],
+                "preview_chunks": task["preview_chunks"],
+                "error": task["error"],
+                "key_point": "这个 demo 把知识入库拆成了解析/切片、写 ES、写图谱三个阶段；真实生产环境通常会把状态落到 Redis 或数据库。",
+            }
+
+        return KnowledgeIngestStatusResponse(**response_payload)
 
     def get_cpu_task_status(self, task_id: str) -> CpuTaskStatusResponse:
         with self._cpu_tasks_lock:
@@ -233,13 +416,19 @@ class LearningService:
             file.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')} | {note}\n")
 
     def shutdown(self) -> None:
+        with self._knowledge_tasks_lock:
+            futures = [task_info["future"] for task_info in self._knowledge_tasks.values() if task_info.get("future") is not None]
+        for future in futures:
+            if not future.done():
+                future.cancel()
         if self._cpu_executor is not None:
             self._cpu_executor.shutdown(wait=False, cancel_futures=True)
             self._cpu_executor = None
 
     def _get_cpu_executor(self) -> ProcessPoolExecutor:
         if self._cpu_executor is None:
-            self._cpu_executor = ProcessPoolExecutor(max_workers=2)
+            # Use spawn to avoid Python 3.13 warnings caused by fork() in multi-threaded processes.
+            self._cpu_executor = ProcessPoolExecutor(max_workers=2, mp_context=get_context("spawn"))
         return self._cpu_executor
 
     def _finalize_cpu_task(self, task_id: str, future: Future) -> None:
@@ -266,7 +455,130 @@ class LearningService:
             task["status"] = status
             task["result"] = result
             task["error"] = error
-            task["completed_at"] = datetime.utcnow()
+            task["completed_at"] = _utc_now()
+
+    def _run_knowledge_ingest_pipeline(
+        self,
+        task_id: str,
+        source_name: str,
+        file_bytes: bytes,
+        chunk_size: int,
+        batch_size: int
+    ) -> None:
+        self._update_knowledge_task(task_id, status="running", stage="parsing_pdf")
+        parsed = self._get_cpu_executor().submit(
+            _simulate_pdf_chunking,
+            file_bytes,
+            source_name,
+            chunk_size
+        )
+        parsed_result = parsed.result()
+        preview_chunks = [
+            KnowledgeChunkPreview(
+                page_no=chunk["page_no"],
+                chunk_no=chunk["chunk_no"],
+                char_count=chunk["char_count"],
+                preview=chunk["preview"]
+            )
+            for chunk in parsed_result["chunks"][:3]
+        ]
+        self._update_knowledge_task(
+            task_id,
+            total_pages=parsed_result["total_pages"],
+            total_chunks=parsed_result["total_chunks"],
+            preview_chunks=preview_chunks,
+        )
+
+        self._update_knowledge_task(task_id, stage="writing_es")
+        es_documents_indexed = asyncio.run(self._simulate_external_index_write(
+            chunks=parsed_result["chunks"],
+            batch_size=batch_size,
+            max_concurrency=4,
+            per_batch_delay_ms=25
+        ))
+        self._update_knowledge_task(task_id, es_documents_indexed=es_documents_indexed)
+
+        self._update_knowledge_task(task_id, stage="writing_graph")
+        graph_nodes_written, graph_edges_written = asyncio.run(self._simulate_graph_write(
+            chunks=parsed_result["chunks"],
+            batch_size=batch_size,
+            max_concurrency=3,
+            per_batch_delay_ms=35
+        ))
+        self._update_knowledge_task(
+            task_id,
+            graph_nodes_written=graph_nodes_written,
+            graph_edges_written=graph_edges_written,
+            status="completed",
+            stage="completed",
+            completed_at=_utc_now()
+        )
+
+    async def _simulate_external_index_write(
+        self,
+        chunks: list[dict],
+        batch_size: int,
+        max_concurrency: int,
+        per_batch_delay_ms: int
+    ) -> int:
+        semaphore = asyncio.Semaphore(max_concurrency)
+        batches = [chunks[index:index + batch_size] for index in range(0, len(chunks), batch_size)]
+
+        async def write_one_batch(batch: list[dict]) -> int:
+            async with semaphore:
+                await asyncio.sleep(per_batch_delay_ms / 1000)
+                return len(batch)
+
+        results = await asyncio.gather(*(write_one_batch(batch) for batch in batches))
+        return sum(results)
+
+    async def _simulate_graph_write(
+        self,
+        chunks: list[dict],
+        batch_size: int,
+        max_concurrency: int,
+        per_batch_delay_ms: int
+    ) -> tuple[int, int]:
+        semaphore = asyncio.Semaphore(max_concurrency)
+        batches = [chunks[index:index + batch_size] for index in range(0, len(chunks), batch_size)]
+
+        async def write_one_batch(batch: list[dict]) -> tuple[int, int]:
+            async with semaphore:
+                await asyncio.sleep(per_batch_delay_ms / 1000)
+                nodes = len(batch)
+                edges = max(0, len(batch) - 1)
+                return nodes, edges
+
+        results = await asyncio.gather(*(write_one_batch(batch) for batch in batches))
+        return sum(item[0] for item in results), sum(item[1] for item in results)
+
+    def _update_knowledge_task(self, task_id: str, **updates) -> None:
+        with self._knowledge_tasks_lock:
+            task = self._knowledge_tasks.get(task_id)
+            if task is None:
+                return
+            task.update(updates)
+
+    def _finalize_knowledge_ingest_task(self, task_id: str, future: Future) -> None:
+        if future.cancelled():
+            self._update_knowledge_task(
+                task_id,
+                status="failed",
+                stage="cancelled",
+                error="任务已取消",
+                completed_at=_utc_now()
+            )
+            return
+        try:
+            future.result()
+        except Exception as exc:
+            self._update_knowledge_task(
+                task_id,
+                status="failed",
+                stage="failed",
+                error=str(exc),
+                completed_at=_utc_now()
+            )
 
 
 learning_service = LearningService()

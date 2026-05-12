@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 from app.core.config import settings
@@ -10,7 +10,7 @@ def _get_jose():
     except ModuleNotFoundError as exc:
         raise RuntimeError(
             "当前环境缺少 python-jose，无法进行 JWT 签发和校验。"
-            " 请执行 `pip install python-jose[cryptography]` 或安装 requirements.txt 中的依赖。"
+            " 请执行 `pip install python-jose` 或安装 requirements.txt 中的依赖。"
         ) from exc
     return JWTError, jwt
 
@@ -27,9 +27,9 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
     _, jwt = _get_jose()
     to_encode = data.copy()
     if expires_delta:
-        expire = datetime.utcnow() + expires_delta
+        expire = datetime.now(timezone.utc) + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=settings.access_token_expire_minutes)
+        expire = datetime.now(timezone.utc) + timedelta(minutes=settings.access_token_expire_minutes)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, settings.secret_key, algorithm=settings.algorithm)
     return encoded_jwt

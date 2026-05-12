@@ -1,5 +1,5 @@
 from pydantic import field_validator
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -7,9 +7,10 @@ class Settings(BaseSettings):
     app_version: str = "1.0.0"
     debug: bool = False
     auth_enabled: bool = True
+    thread_pool_max_workers: int = 8
     host: str = "0.0.0.0"
     port: int = 8000
-    database_url: str = "sqlite:///./app.db"
+    database_url: str = "mysql+pymysql://root:123456@10.20.40.26:3306/fastapi_study?charset=utf8mb4"
     secret_key: str = "your-secret-key-change-in-production"
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
@@ -25,10 +26,11 @@ class Settings(BaseSettings):
                 return False
         return value
 
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-        case_sensitive = False
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        case_sensitive=False,
+    )
 
 
 settings = Settings()

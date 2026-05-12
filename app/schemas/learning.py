@@ -25,6 +25,28 @@ class ThreadpoolDemoResponse(BaseModel):
     key_point: str
 
 
+class CustomThreadpoolDemoResponse(BaseModel):
+    pattern: str
+    max_workers: int
+    task_count: int
+    delay_ms: int
+    elapsed_ms: float
+    worker_threads: List[str]
+    unique_workers: int
+    key_point: str
+
+
+class SharedThreadpoolDemoResponse(BaseModel):
+    pattern: str
+    configured_max_workers: int
+    task_count: int
+    delay_ms: int
+    elapsed_ms: float
+    worker_threads: List[str]
+    unique_workers: int
+    key_point: str
+
+
 class BackgroundTaskResponse(BaseModel):
     pattern: str
     status: str
@@ -93,6 +115,42 @@ class CpuTaskStatusResponse(BaseModel):
     created_at: datetime
     completed_at: Optional[datetime] = None
     result: Optional[CpuTaskResult] = None
+    error: Optional[str] = None
+    key_point: str
+
+
+class KnowledgeChunkPreview(BaseModel):
+    page_no: int
+    chunk_no: int
+    char_count: int
+    preview: str
+
+
+class KnowledgeIngestSubmitResponse(BaseModel):
+    pattern: str
+    task_id: str
+    status: str
+    source_name: str
+    poll_path: str
+    key_point: str
+
+
+class KnowledgeIngestStatusResponse(BaseModel):
+    pattern: str
+    task_id: str
+    status: str
+    stage: str
+    source_name: str
+    chunk_size: int
+    batch_size: int
+    created_at: datetime
+    completed_at: Optional[datetime] = None
+    total_pages: int = 0
+    total_chunks: int = 0
+    es_documents_indexed: int = 0
+    graph_nodes_written: int = 0
+    graph_edges_written: int = 0
+    preview_chunks: List[KnowledgeChunkPreview] = Field(default_factory=list)
     error: Optional[str] = None
     key_point: str
 

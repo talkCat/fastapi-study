@@ -15,6 +15,9 @@ class RepositoryBase:
     def get_all(self, db: Session, skip: int = 0, limit: int = 100) -> List[ModelType]:
         return db.query(self.model).offset(skip).limit(limit).all()
 
+    def count(self, db: Session) -> int:
+        return db.query(self.model).count()
+
     def create(self, db: Session, obj_in: dict) -> ModelType:
         db_obj = self.model(**obj_in)
         db.add(db_obj)

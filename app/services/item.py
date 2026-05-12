@@ -21,6 +21,9 @@ class ItemRepository(RepositoryBase):
     ) -> List[ItemModel]:
         return db.query(ItemModel).filter(ItemModel.category == category).offset(skip).limit(limit).all()
 
+    def count_by_category(self, db: Session, category: ItemCategory) -> int:
+        return db.query(ItemModel).filter(ItemModel.category == category).count()
+
     def search(self, db: Session, keyword: str, skip: int = 0, limit: int = 100) -> List[ItemModel]:
         return (
             db.query(ItemModel)
@@ -28,6 +31,13 @@ class ItemRepository(RepositoryBase):
             .offset(skip)
             .limit(limit)
             .all()
+        )
+
+    def count_search(self, db: Session, keyword: str) -> int:
+        return (
+            db.query(ItemModel)
+            .filter(or_(ItemModel.name.ilike(f"%{keyword}%"), ItemModel.description.ilike(f"%{keyword}%")))
+            .count()
         )
 
     def create(self, db: Session, item_in: ItemCreate, owner_id: int) -> ItemModel:
