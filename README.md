@@ -48,6 +48,9 @@ fastapi-study/
 │       └── repository.py
 ├── docs/
 │   ├── async_concurrency_guide.md
+│   ├── database_query_and_response_guide.md
+│   ├── openai_chat_agent_learning_plan.md
+│   ├── skills_vs_tools_guide.md
 │   └── python_syntax_notes.md
 ├── .env                        # 环境变量（本地）
 ├── .env.example                # 环境变量模板
@@ -296,6 +299,14 @@ make clean        # 清理缓存
 
 - 学习模块接口测试文件：`tests/test_learning_endpoints.py`
 - 运行命令：`python -m unittest tests.test_learning_endpoints`
+
+### OpenAI 接入学习建议
+
+- 学习计划文档：`docs/openai_chat_agent_learning_plan.md`
+- 推荐路线：先学 `OpenAI Python SDK + Responses API`，再学 `Function Calling / Structured Outputs`
+- 第二阶段再看 `OpenAI Agents SDK`
+- 想搞清楚 `Skill` 和 `Tool` 的边界时，读 `docs/skills_vs_tools_guide.md`
+- `LangChain` 建议放到官方 SDK 跑通之后再学
 
 ### 环境变量说明
 

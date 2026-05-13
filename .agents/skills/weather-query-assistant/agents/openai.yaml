@@ -1,0 +1,4 @@
+interface:
+  display_name: "Weather Query Assistant"
+  short_description: "Handle concise weather questions"
+  default_prompt: "Use Weather Query Assistant for current weather and short forecast questions when the user provides or can clarify a location."
