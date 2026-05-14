@@ -14,6 +14,23 @@
 
 - `codex/001-codex-skill-development.ipynb`
 - `codex/002-build-a-minimal-weather-skill.ipynb`
+- `codex/003-refactor-a-skill-with-references.ipynb`
+- `codex/004-add-a-script-to-a-skill.ipynb`
+- `codex/005-wire-a-skill-into-a-mini-workflow.ipynb`
+- `codex/006-run-a-full-weather-skill-session.ipynb`
+- `codex/007-handle-errors-and-fallbacks-in-a-skill.ipynb`
+- `codex/008-implement-a-real-open-meteo-fallback.ipynb`
+- `codex/009-validate-a-skill-end-to-end.ipynb`
+- `codex/010-final-recap-how-a-skill-grows.ipynb`
+- `codex/011-build-a-weather-customer-service-agent.ipynb`
+
+如果开始做智能体实战，可以单独分目录：
+
+- `agent-practice/001-weather-assistant-agent.ipynb`
+
+如果开始学习 Claude Code 这类编码代理的交互模式和工程约束，可以单独分目录：
+
+- `harness-engineering/001-claude-code-harness-engineering.ipynb`
 
 这样做的好处是：
 
@@ -158,5 +175,57 @@ OPENAI_BASE_URL=http://192.168.102.19:8082/v1
 
 - `codex/001-codex-skill-development.ipynb`
 - `codex/002-build-a-minimal-weather-skill.ipynb`
+- `codex/003-refactor-a-skill-with-references.ipynb`
+- `codex/004-add-a-script-to-a-skill.ipynb`
+- `codex/005-wire-a-skill-into-a-mini-workflow.ipynb`
+- `codex/006-run-a-full-weather-skill-session.ipynb`
+- `codex/007-handle-errors-and-fallbacks-in-a-skill.ipynb`
+- `codex/008-implement-a-real-open-meteo-fallback.ipynb`
+- `codex/009-validate-a-skill-end-to-end.ipynb`
+- `codex/010-final-recap-how-a-skill-grows.ipynb`
+- `codex/011-build-a-weather-customer-service-agent.ipynb`
 
-这两份更偏真实 Skill 目录、开发流程和工作流，不依赖 OpenAI API 调用，适合在理解 `004/005` 之后再看。
+前十份更偏真实 Skill 目录、开发流程和工作流。第十一份开始进入“Skill 如何接入一个业务型 Agent / 客服流程”的主题。
+
+---
+
+## 7. 智能体实战 Notebook
+
+如果你想把前面学过的 OpenAI API、结构化输出、函数调用和 Skill / Tool 分层真正串起来，可以看：
+
+- `agent-practice/001-weather-assistant-agent.ipynb`
+
+这一份会复用仓库已有的 `weather-query-assistant` Skill，并通过独立的 `.agents/tools/weather/fetch_weather.py` 工具脚本，做一个最小天气助手智能体。
+
+重点流程：
+
+1. 用户问题进入智能体
+2. 模型识别天气意图并提取地点
+3. 应用代码调用天气工具
+4. 模型把工具结果整理成中文回答
+
+这条线适合放在 `openai/004-openai-function-calling.ipynb` 和 `openai/005-stock-agent-demo-v1.ipynb` 之后学习。
+
+---
+
+## 8. Harness Engineering / Claude Code 设计学习
+
+如果你想学习 Claude Code 这类交互式编码代理背后的工程设计，可以看：
+
+- `harness-engineering/001-claude-code-harness-engineering.ipynb`
+
+这一份围绕一个核心观点展开：
+
+```text
+Prompt 决定模型怎么说话，Harness 决定模型怎么做事。
+```
+
+学习重点：
+
+1. 为什么要把模型当成不稳定部件
+2. Prompt 为什么是控制面，而不是人格装饰
+3. Query Loop 如何成为代理系统的心跳
+4. Tool Permission、Context Compact、Recovery Fuse、Independent Verification 如何共同约束模型行为
+5. 如何把个人 AI 编码工具升级成团队可复用的工程系统
+
+这一组 Notebook 不依赖 OpenAI API，适合在理解 `codex/001`、`skills_vs_tools_guide.md` 和 `agent-practice/001` 之后学习。

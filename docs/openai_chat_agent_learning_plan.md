@@ -40,6 +40,7 @@
 - `notebooks/openai/003-openai-structured-output.ipynb`
 - `notebooks/openai/004-openai-function-calling.ipynb`
 - `notebooks/openai/005-stock-agent-demo-v1.ipynb`
+- `notebooks/agent-practice/001-weather-assistant-agent.ipynb`
 
 这份 Notebook 同时兼容两种模式：
 
@@ -70,9 +71,10 @@ OPENAI_BASE_URL=http://192.168.102.19:8082/v1
 2. 第二阶段再学 `Structured Outputs`
 3. 第三阶段再学 `Function Calling`
 4. 第四阶段做单 Agent 的股票助手
-5. 第五阶段再评估 `OpenAI Agents SDK`
-6. `LangChain` 放到第二阶段之后再接触
-7. `LangGraph` 只在复杂长流程场景再引入
+5. 第五阶段做天气助手这种更贴近业务工具复用的智能体实战
+6. 第六阶段再评估 `OpenAI Agents SDK`
+7. `LangChain` 放到第二阶段之后再接触
+8. `LangGraph` 只在复杂长流程场景再引入
 
 核心原因：
 
@@ -213,9 +215,11 @@ OPENAI_BASE_URL=http://192.168.102.19:8082/v1
     ↓
 阶段 5：股票行情智能体 Demo v1
     ↓
-阶段 6：OpenAI Agents SDK / LangChain
+阶段 6：天气助手智能体实战
     ↓
-阶段 7：LangGraph（只在复杂工作流时）
+阶段 7：OpenAI Agents SDK / LangChain
+    ↓
+阶段 8：LangGraph（只在复杂工作流时）
 ```
 
 ---

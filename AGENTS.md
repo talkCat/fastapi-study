@@ -46,6 +46,8 @@ Main references:
 - `notebooks/openai/003-openai-structured-output.ipynb`
 - `notebooks/openai/004-openai-function-calling.ipynb`
 - `notebooks/openai/005-stock-agent-demo-v1.ipynb`
+- `notebooks/agent-practice/001-weather-assistant-agent.ipynb`
+- `notebooks/harness-engineering/001-claude-code-harness-engineering.ipynb`
 
 This track already covers:
 
@@ -54,6 +56,26 @@ This track already covers:
 3. structured output
 4. function calling
 5. minimal stock-agent demo
+6. weather assistant agent practice with a repo-local Skill-backed tool
+7. Harness Engineering principles for Claude Code style coding agents
+
+### Harness Engineering / Claude Code design track
+
+Main references:
+
+- `notebooks/harness-engineering/README.md`
+- `notebooks/harness-engineering/001-claude-code-harness-engineering.ipynb`
+- `docs/skills_vs_tools_guide.md`
+
+This track teaches:
+
+1. Prompt as control plane, not personality decoration
+2. Query Loop as the agent heartbeat
+3. Tools as managed execution interfaces with permission gates
+4. Context as working memory with budget governance
+5. Error recovery as the main path, not an edge case
+6. Sub-agent isolation and independent verification
+7. Team policy as the basis for reliable agent adoption
 
 ### Codex / Skills learning track
 
@@ -62,13 +84,38 @@ Main references:
 - `docs/skills_vs_tools_guide.md`
 - `notebooks/codex/001-codex-skill-development.ipynb`
 - `notebooks/codex/002-build-a-minimal-weather-skill.ipynb`
+- `notebooks/codex/003-refactor-a-skill-with-references.ipynb`
+- `notebooks/codex/004-add-a-script-to-a-skill.ipynb`
+- `notebooks/codex/005-wire-a-skill-into-a-mini-workflow.ipynb`
+- `notebooks/codex/006-run-a-full-weather-skill-session.ipynb`
+- `notebooks/codex/007-handle-errors-and-fallbacks-in-a-skill.ipynb`
+- `notebooks/codex/008-implement-a-real-open-meteo-fallback.ipynb`
+- `notebooks/codex/009-validate-a-skill-end-to-end.ipynb`
+- `notebooks/codex/010-final-recap-how-a-skill-grows.ipynb`
 
 Repo-local Skills already created:
 
 - `.agents/skills/openai-notebook-author/`
 - `.agents/skills/weather-query-assistant/`
 
-These are used for teaching real Skill structure and development workflow.
+Repo-local Tools already created:
+
+- `.agents/tools/weather/`
+
+This track now contains a complete 10-lesson weather-skill line that teaches:
+
+1. reading a real Skill
+2. building a minimal Skill
+3. introducing `references/`
+4. introducing `scripts/`
+5. wiring a mini workflow
+6. running a full session
+7. handling errors and fallbacks
+8. implementing a real Open-Meteo fallback
+9. validating the Skill end to end
+10. final recap of the growth path
+
+These repo-local Skills are used for teaching real Skill structure, workflow growth, fallback design, and validation.
 
 ## Important Repo Conventions
 
@@ -140,13 +187,31 @@ Path:
 
 Purpose:
 
-- teach how to build a minimal Skill from scratch
-- keep the first version intentionally small
+- teach the full lifecycle of growing a repo-local Skill from minimal structure to a usable, validated workflow
+- provide a concrete weather-query example with primary and fallback paths
 
 Important files:
 
 - `SKILL.md`
 - `agents/openai.yaml`
+- `references/weather_sources.md`
+- `scripts/normalize_location.py`
+- `scripts/build_wttr_query.py`
+- `scripts/build_open_meteo_query.py`
+- `scripts/validate_weather_skill.py`
+
+Related tool files:
+
+- `.agents/tools/weather/fetch_weather.py`
+- `.agents/tools/weather/validate_weather_tool.py`
+
+Current state:
+
+- has a primary `wttr.in` query-building path
+- has an Open-Meteo fallback query-building path
+- uses a separated structured weather tool under `.agents/tools/weather/`
+- has a minimal validation script
+- is the canonical teaching example for the Codex / Skills notebook series
 
 ## How To Start a New Session
 
@@ -162,22 +227,39 @@ If the request is about OpenAI notebooks or stock-agent learning:
 2. inspect the latest notebook in the target series
 3. keep naming and teaching rhythm consistent
 
+If the request is about agent practice notebooks:
+
+1. read `docs/openai_chat_agent_learning_plan.md`
+2. inspect `notebooks/agent-practice/`
+3. keep repo-local Skills and runtime Tools separated: Skills under `.agents/skills/`, Tools under `.agents/tools/`
+4. reuse existing repo-local Skills and Tools when possible instead of duplicating tool logic inside notebooks
+
+If the request is about Harness Engineering, Claude Code interaction patterns, or coding-agent reliability:
+
+1. inspect `notebooks/harness-engineering/`
+2. keep the teaching focus on engineering controls rather than model cleverness
+3. explain reliability through Prompt control plane, Query Loop, Tool permissions, Context budget, Recovery, independent verification, and team policy
+4. avoid claiming exact Claude Code source behavior unless source files are actually present or cited
+
 If the request is about Skills / Codex / OpenClaw-style workflow:
 
 1. read `docs/skills_vs_tools_guide.md`
 2. inspect `notebooks/codex/001-codex-skill-development.ipynb`
-3. inspect the real skill directories under `.agents/skills/`
-4. prefer teaching through real repo-local Skills instead of only abstract definitions
+3. inspect the rest of the Codex notebook series if the request is about the weather skill growth path
+4. inspect the real skill directories under `.agents/skills/`
+5. prefer teaching through real repo-local Skills instead of only abstract definitions
 
 ## Good Next Steps
 
 If the user asks what to build next, these are the most natural follow-ups:
 
 1. continue the Codex lessons:
-   - lesson 3: add `references/` to the weather skill
-   - lesson 4: add a small script such as location normalization
+   - the 10-lesson weather-skill line is complete
+   - the next natural step is to migrate the same growth pattern to a new Skill topic
 2. connect the stock-agent demo to a real FastAPI endpoint
 3. keep extending the OpenAI learning notebooks in small, staged lessons
+4. continue the Harness Engineering series with a minimal query-loop implementation
+5. refine `AGENTS.md` when major repo context changes
 
 ## Things To Avoid
 
@@ -196,5 +278,7 @@ This repo is a staged learning workspace for:
 - structured output and function calling
 - minimal agents
 - real repo-local Skill development
+- a complete weather-skill teaching line from minimal Skill to validated workflow
+- Harness Engineering principles for reliable coding-agent systems
 
 When unsure, continue by preserving teaching clarity, concrete examples, and the repo's existing staged learning structure.
