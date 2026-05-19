@@ -1,0 +1,1707 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Harness 聊天智能体</title>
+  <style>
+    :root {
+      --bg: #f6f7f9;
+      --panel: #ffffff;
+      --panel-2: #eef2f6;
+      --text: #17202a;
+      --muted: #657282;
+      --line: #d8dee6;
+      --accent: #1f6feb;
+      --accent-2: #0f766e;
+      --danger: #b42318;
+      --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .main {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      min-width: 0;
+      min-height: 0;
+      border-right: 1px solid var(--line);
+      background: var(--panel);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(10px);
+    }
+
+    .title {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 0;
+    }
+
+    .title h1 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.25;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .title span {
+      color: var(--muted);
+      font-size: 13px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      flex: 0 0 auto;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: var(--muted);
+    }
+
+    .dot.live {
+      background: var(--accent-2);
+    }
+
+    .messages {
+      overflow: auto;
+      min-height: 0;
+      padding: 24px 20px;
+      background: linear-gradient(#ffffff, #fbfcfd);
+    }
+
+    .message {
+      display: grid;
+      gap: 8px;
+      max-width: 880px;
+      margin: 0 0 18px;
+    }
+
+    .message.user {
+      margin-left: auto;
+      justify-items: end;
+    }
+
+    .message.assistant {
+      margin-right: auto;
+    }
+
+    .bubble {
+      max-width: min(760px, 100%);
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      line-height: 1.65;
+      font-size: 15px;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      background: var(--panel);
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+    }
+
+    .assistant .bubble {
+      display: grid;
+      gap: 12px;
+      width: min(760px, 100%);
+    }
+
+    .flow {
+      display: grid;
+      gap: 8px;
+    }
+
+    .flow-row {
+      display: grid;
+      gap: 6px;
+      padding: 9px 10px;
+      border: 1px solid #e4e9f0;
+      border-radius: 8px;
+      background: #fbfcfd;
+    }
+
+    .flow-row.error {
+      border-color: rgba(180, 35, 24, 0.32);
+      background: #fff7f6;
+      color: var(--danger);
+    }
+
+    .flow-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: #243244;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .flow-head-left {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .flow-time {
+      flex: 0 0 auto;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .flow-source {
+      display: inline-flex;
+      align-items: center;
+      min-height: 20px;
+      padding: 0 7px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+
+    .flow-source.backend {
+      background: #e8f1ff;
+      color: #1d4ed8;
+      border: 1px solid #cfe0ff;
+    }
+
+    .flow-source.frontend {
+      background: #fff4db;
+      color: #9a6700;
+      border: 1px solid #f5ddb0;
+    }
+
+    .flow-summary {
+      color: #42526a;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .flow-row details {
+      display: grid;
+      gap: 6px;
+    }
+
+    .flow-row summary {
+      color: var(--accent);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .answer-label {
+      padding-top: 4px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .answer-text:empty::before {
+      content: "等待最终回答...";
+      color: var(--muted);
+    }
+
+    .user .bubble {
+      color: #ffffff;
+      border-color: var(--accent);
+      background: var(--accent);
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .composer {
+      display: grid;
+      gap: 10px;
+      padding: 14px 20px 18px;
+      border-top: 1px solid var(--line);
+      background: var(--panel);
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .field {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 34px;
+      padding: 0 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcfd;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .field input[type="text"] {
+      width: 160px;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--text);
+      font: inherit;
+    }
+
+    .field input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--accent);
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: end;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 54px;
+      max-height: 180px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px 13px;
+      outline: none;
+      font: inherit;
+      line-height: 1.5;
+      background: #ffffff;
+      color: var(--text);
+    }
+
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(31, 111, 235, 0.12);
+    }
+
+    button {
+      min-height: 42px;
+      padding: 0 16px;
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      background: var(--accent);
+      color: #ffffff;
+      font: inherit;
+      font-weight: 650;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      border-color: var(--line);
+      background: #ffffff;
+      color: var(--text);
+    }
+
+    button.inline-action {
+      width: auto;
+      min-height: 34px;
+      padding: 0 12px;
+      border-color: var(--accent-2);
+      background: var(--accent-2);
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.58;
+    }
+
+    .approval-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      padding: 10px;
+      border: 1px solid rgba(15, 118, 110, 0.26);
+      border-radius: 8px;
+      background: #f0fdfa;
+    }
+
+    .approval-text {
+      min-width: min(280px, 100%);
+      color: #115e59;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .side {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      min-width: 0;
+      min-height: 0;
+      background: #fbfcfd;
+    }
+
+    .side-header {
+      padding: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .side-header h2 {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.3;
+      letter-spacing: 0;
+    }
+
+    .side-body {
+      overflow: hidden;
+      min-height: 0;
+      padding: 14px;
+      display: grid;
+      grid-template-rows: minmax(0, 0.95fr) minmax(0, 1.2fr) minmax(0, 0.85fr);
+      gap: 12px;
+    }
+
+    .panel {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      min-height: 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: 0 2px 14px rgba(15, 23, 42, 0.04);
+      overflow: hidden;
+    }
+
+    .panel-title {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      background: var(--panel-2);
+    }
+
+    .panel-body {
+      min-height: 0;
+      overflow: auto;
+    }
+
+    .ledger-runs {
+      display: grid;
+      gap: 10px;
+      padding: 10px;
+      align-content: start;
+    }
+
+    .ledger-run {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      overflow: hidden;
+    }
+
+    .ledger-run-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      background: #f8fafc;
+    }
+
+    .ledger-run-title {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+    }
+
+    .ledger-run-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .ledger-run-meta {
+      color: var(--muted);
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+
+    .ledger-list {
+      display: grid;
+      gap: 8px;
+      padding: 10px;
+    }
+
+    .ledger-item {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 9px 10px;
+      background: #fcfdff;
+    }
+
+    .ledger-item-head {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .ledger-item-main {
+      display: grid;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .ledger-step {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      overflow-wrap: anywhere;
+    }
+
+    .ledger-step-meta {
+      color: var(--muted);
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+
+    .ledger-detail {
+      color: #42526a;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .ledger-status {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 24px;
+      padding: 0 8px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+      flex: 0 0 auto;
+    }
+
+    .ledger-status.completed {
+      color: #166534;
+      background: #ecfdf3;
+      border-color: #b7ebc6;
+    }
+
+    .ledger-status.running {
+      color: #1d4ed8;
+      background: #e8f1ff;
+      border-color: #cfe0ff;
+    }
+
+    .ledger-status.pending {
+      color: #9a6700;
+      background: #fff7db;
+      border-color: #f5ddb0;
+    }
+
+    .ledger-status.failed {
+      color: #b42318;
+      background: #fff1f0;
+      border-color: #f0b6b1;
+    }
+
+    .model-calls {
+      display: grid;
+      gap: 10px;
+      padding: 10px;
+      align-content: start;
+    }
+
+    .model-call {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      overflow: hidden;
+    }
+
+    .model-call-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      background: #f8fafc;
+    }
+
+    .model-call-title {
+      display: grid;
+      gap: 3px;
+      min-width: 0;
+    }
+
+    .model-call-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .model-call-meta {
+      color: var(--muted);
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+
+    .model-call-body {
+      display: grid;
+      gap: 8px;
+      padding: 10px;
+    }
+
+    .model-block {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      background: #fcfdff;
+      padding: 9px 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .model-block-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .model-block-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .model-block-summary {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .model-stream {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      color: #334155;
+      font-size: 13px;
+      line-height: 1.55;
+      min-height: 18px;
+    }
+
+    .events {
+      display: grid;
+      gap: 8px;
+      padding: 10px;
+      align-content: start;
+    }
+
+    .event {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px;
+      background: #ffffff;
+    }
+
+    .event-name {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      color: #334155;
+      font-size: 12px;
+      line-height: 1.45;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
+
+    .empty {
+      color: var(--muted);
+      font-size: 13px;
+      padding: 10px;
+    }
+
+    .error {
+      color: var(--danger);
+    }
+
+    @media (max-width: 900px) {
+      body {
+        overflow: auto;
+      }
+
+      .app {
+        grid-template-columns: 1fr;
+        grid-template-rows: minmax(68vh, 1fr) 32vh;
+        min-height: 100vh;
+        overflow: visible;
+      }
+
+      .main {
+        min-height: 0;
+        border-right: 0;
+      }
+
+      .side {
+        border-top: 1px solid var(--line);
+        min-height: 32vh;
+      }
+
+      .input-row {
+        grid-template-columns: 1fr;
+      }
+
+      button {
+        width: 100%;
+      }
+
+      button.inline-action {
+        width: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <main class="main">
+      <header class="topbar">
+        <div class="title">
+          <h1>Harness 聊天智能体</h1>
+          <span id="sessionLabel">session: new</span>
+        </div>
+        <div class="status"><span id="statusDot" class="dot"></span><span id="statusText">ready</span></div>
+      </header>
+
+      <section id="messages" class="messages" aria-live="polite"></section>
+
+      <form id="chatForm" class="composer">
+        <div class="controls">
+          <label class="field">技能 <input id="skillNames" type="text" placeholder="weather"></label>
+          <label class="field"><input id="autoApprove" type="checkbox"> 自动批准工具</label>
+          <button id="clearBtn" class="secondary" type="button">清空</button>
+        </div>
+        <div class="input-row">
+          <textarea id="messageInput" placeholder="问一个问题，例如：北京现在天气怎么样？" required></textarea>
+          <button id="sendBtn" type="submit">发送</button>
+        </div>
+      </form>
+    </main>
+
+    <aside class="side">
+      <div class="side-header">
+        <h2>执行观察</h2>
+      </div>
+      <div class="side-body">
+        <section class="panel">
+          <div class="panel-title">账本</div>
+          <div class="panel-body">
+            <div id="ledgerRuns" class="ledger-runs">
+              <div class="empty">等待账本记录</div>
+            </div>
+          </div>
+        </section>
+        <section class="panel">
+          <div class="panel-title">模型交互</div>
+          <div class="panel-body">
+            <div id="modelCalls" class="model-calls">
+              <div class="empty">等待模型交互</div>
+            </div>
+          </div>
+        </section>
+        <section class="panel">
+          <div class="panel-title">后端事件</div>
+          <div class="panel-body">
+            <div id="backendEvents" class="events">
+              <div class="empty">等待后端事件</div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    const form = document.querySelector("#chatForm");
+    const input = document.querySelector("#messageInput");
+    const sendBtn = document.querySelector("#sendBtn");
+    const clearBtn = document.querySelector("#clearBtn");
+    const messages = document.querySelector("#messages");
+    const ledgerRuns = document.querySelector("#ledgerRuns");
+    const modelCalls = document.querySelector("#modelCalls");
+    const backendEvents = document.querySelector("#backendEvents");
+    const statusDot = document.querySelector("#statusDot");
+    const statusText = document.querySelector("#statusText");
+    const sessionLabel = document.querySelector("#sessionLabel");
+    const skillNames = document.querySelector("#skillNames");
+    const autoApprove = document.querySelector("#autoApprove");
+
+    let sessionId = localStorage.getItem("harnessChatSessionId") || null;
+    let currentController = null;
+    let waitTimer = null;
+    let waitInterval = null;
+    let activeWaitRow = null;
+    let lastEventAt = 0;
+    let waitingStage = "服务端响应";
+    const approvalButtons = new Set();
+    const ledgerRunViews = new Map();
+    const modelCallViews = new Map();
+    const backendEventNames = new Set([
+      "phase",
+      "plan",
+      "permission",
+      "tool_start",
+      "tool_result",
+      "answer_delta",
+      "done",
+      "approval_required",
+      "approval_resolved"
+    ]);
+    updateSessionLabel();
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const text = input.value.trim();
+      if (!text || currentController) return;
+
+      input.value = "";
+      await sendUserMessage(text);
+    });
+
+    async function sendUserMessage(text, options = {}) {
+      if (!text || currentController) return;
+      appendMessage("user", text);
+      const assistantView = appendAssistantResponse();
+      assistantView.sourceText = text;
+      clearEvents();
+      await streamChat(text, assistantView, options);
+    }
+
+    clearBtn.addEventListener("click", () => {
+      sessionId = null;
+      localStorage.removeItem("harnessChatSessionId");
+      messages.innerHTML = "";
+      clearEvents();
+      updateSessionLabel();
+      setStatus("ready", false);
+    });
+
+    function appendMessage(role, text) {
+      const wrapper = document.createElement("article");
+      wrapper.className = `message ${role}`;
+
+      const meta = document.createElement("div");
+      meta.className = "meta";
+      meta.textContent = role === "user" ? "You" : "Agent";
+
+      const bubble = document.createElement("div");
+      bubble.className = "bubble";
+      bubble.textContent = text;
+
+      wrapper.append(meta, bubble);
+      messages.append(wrapper);
+      messages.scrollTop = messages.scrollHeight;
+      return bubble;
+    }
+
+    function appendAssistantResponse() {
+      const wrapper = document.createElement("article");
+      wrapper.className = "message assistant";
+
+      const meta = document.createElement("div");
+      meta.className = "meta";
+      meta.textContent = "Agent";
+
+      const bubble = document.createElement("div");
+      bubble.className = "bubble";
+
+      const flow = document.createElement("div");
+      flow.className = "flow";
+
+      const answerLabel = document.createElement("div");
+      answerLabel.className = "answer-label";
+      answerLabel.textContent = "最终回答";
+
+      const answerText = document.createElement("div");
+      answerText.className = "answer-text";
+
+      bubble.append(flow, answerLabel, answerText);
+      wrapper.append(meta, bubble);
+      messages.append(wrapper);
+      messages.scrollTop = messages.scrollHeight;
+      return {
+        bubble,
+        flow,
+        answerText,
+        answerStarted: false,
+        approvalShown: false,
+        sourceText: "",
+        runId: null,
+        pendingApproval: null,
+        approvalActions: null
+      };
+    }
+
+    async function streamChat(text, assistantView, options = {}) {
+      currentController = new AbortController();
+      sendBtn.disabled = true;
+      disableApprovalButtons();
+      setStatus("streaming", true);
+      appendFlow(
+        assistantView,
+        "request",
+        "已发送请求，等待服务端开始流式返回。",
+        payloadPreview(text, options),
+        false,
+        "frontend"
+      );
+      scheduleWaitNotice(assistantView, "服务端建立流式连接");
+
+      const requestedSkills = skillNames.value
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean);
+
+      const payload = {
+        message: text,
+        session_id: sessionId,
+        skill_names: requestedSkills.length ? requestedSkills : null,
+        auto_approve_tools: Boolean(options.forceAutoApprove) || autoApprove.checked,
+        max_steps: 4
+      };
+
+      try {
+        await streamRequest("/api/v1/chat-agent/chat/stream", payload, assistantView);
+      } catch (error) {
+        clearWaitNotice();
+        appendFlow(assistantView, "stream error", error.message, {message: error.message}, true, "frontend");
+        assistantView.bubble.classList.add("error");
+      } finally {
+        clearWaitNotice();
+        currentController = null;
+        sendBtn.disabled = false;
+        enableApprovalButtons();
+        setStatus("ready", false);
+        input.focus();
+      }
+    }
+
+    async function streamApprovalDecision(assistantView, approvalId, approved) {
+      currentController = new AbortController();
+      sendBtn.disabled = true;
+      disableApprovalButtons();
+      setStatus("approval", true);
+      appendFlow(
+        assistantView,
+        approved ? "审批" : "拒绝",
+        approved ? "已提交审批通过，系统将从账本检查点继续执行。" : "已提交拒绝结果，系统将结束本轮执行。",
+        {approval_id: approvalId, approved},
+        false,
+        "frontend"
+      );
+      scheduleWaitNotice(assistantView, approved ? "审批恢复执行" : "写回拒绝结果");
+
+      try {
+        await streamRequest(
+          "/api/v1/chat-agent/approvals/stream",
+          {approval_id: approvalId, approved},
+          assistantView
+        );
+      } catch (error) {
+        clearWaitNotice();
+        appendFlow(assistantView, "approval error", error.message, {message: error.message}, true, "frontend");
+        assistantView.bubble.classList.add("error");
+      } finally {
+        clearWaitNotice();
+        currentController = null;
+        sendBtn.disabled = false;
+        enableApprovalButtons();
+        setStatus("ready", false);
+        input.focus();
+      }
+    }
+
+    async function streamRequest(url, payload, assistantView) {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(payload),
+        signal: currentController.signal
+      });
+
+      if (!response.ok || !response.body) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      await readSseStream(response.body, (eventName, data) => {
+        handleAgentEvent(eventName, data, assistantView);
+      });
+    }
+
+    async function readSseStream(stream, onEvent) {
+      const reader = stream.getReader();
+      const decoder = new TextDecoder("utf-8");
+      let buffer = "";
+
+      while (true) {
+        const {value, done} = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, {stream: true});
+
+        let boundary = buffer.indexOf("\n\n");
+        while (boundary !== -1) {
+          const rawEvent = buffer.slice(0, boundary);
+          buffer = buffer.slice(boundary + 2);
+          parseSseEvent(rawEvent, onEvent);
+          boundary = buffer.indexOf("\n\n");
+        }
+      }
+
+      if (buffer.trim()) {
+        parseSseEvent(buffer, onEvent);
+      }
+    }
+
+    function parseSseEvent(rawEvent, onEvent) {
+      let eventName = "message";
+      const dataLines = [];
+
+      for (const line of rawEvent.split("\n")) {
+        if (line.startsWith("event:")) {
+          eventName = line.slice(6).trim();
+        } else if (line.startsWith("data:")) {
+          dataLines.push(line.slice(5).trimStart());
+        }
+      }
+
+      if (!dataLines.length) return;
+      try {
+        onEvent(eventName, JSON.parse(dataLines.join("\n")));
+      } catch (error) {
+        onEvent("parse_error", {raw: dataLines.join("\n"), error: error.message});
+      }
+    }
+
+    function handleAgentEvent(eventName, data, assistantView) {
+      clearWaitNotice();
+
+      if (data && data.run_id && !assistantView.runId) {
+        assistantView.runId = data.run_id;
+      }
+
+      if (eventName === "answer_delta") {
+        appendBackendEvent(eventName, data);
+        if (!assistantView.answerStarted) {
+          assistantView.answerStarted = true;
+          appendFlow(
+            assistantView,
+            "回答生成",
+            "开始流式生成最终回答。",
+            {event: "answer_delta"},
+            false,
+            "frontend"
+          );
+          setStatus("answering", true);
+        }
+        assistantView.answerText.textContent += data.text || "";
+        messages.scrollTop = messages.scrollHeight;
+        scheduleWaitNotice(assistantView, "继续接收回答内容");
+        return;
+      }
+
+      if (eventName === "model_request") {
+        appendModelRequest(data);
+        scheduleWaitNotice(assistantView, `等待模型返回：${data.stage || "unknown"}`);
+        return;
+      }
+
+      if (eventName === "model_delta") {
+        appendModelDelta(data);
+        return;
+      }
+
+      if (eventName === "model_response") {
+        appendModelResponse(data);
+        return;
+      }
+
+      appendFlowForEvent(assistantView, eventName, data);
+      if (eventName === "ledger") {
+        appendLedgerEntry(data);
+      } else if (backendEventNames.has(eventName) || eventName === "parse_error") {
+        appendBackendEvent(eventName, data);
+      }
+
+      if (eventName === "done") {
+        if (data.run_id) {
+          assistantView.runId = data.run_id;
+        }
+        if (!assistantView.answerText.textContent && data.answer) {
+          assistantView.answerText.textContent = data.answer;
+        }
+        if (data.session_id) {
+          sessionId = data.session_id;
+          localStorage.setItem("harnessChatSessionId", sessionId);
+          updateSessionLabel();
+        }
+        clearWaitNotice();
+        return;
+      }
+
+      scheduleWaitNotice(assistantView, nextWaitingStage(eventName, data));
+    }
+
+    function appendFlowForEvent(assistantView, eventName, data) {
+      if (eventName === "approval_required") {
+        assistantView.pendingApproval = data;
+        showApprovalAction(assistantView, "工具调用进入待审批状态。", data);
+        appendFlow(
+          assistantView,
+          "审批请求",
+          `${data.tool_name || "tool"} 等待审批票据 ${data.approval_id}`,
+          data,
+          false,
+          "backend"
+        );
+        setStatus("pending approval", true);
+        return;
+      }
+
+      if (eventName === "approval_resolved") {
+        assistantView.pendingApproval = null;
+        appendFlow(
+          assistantView,
+          "审批结果",
+          data.decision === "approved" ? "审批已通过，继续执行。": "审批已拒绝，本轮结束。",
+          data,
+          false,
+          "backend"
+        );
+        setStatus("approval resolved", true);
+        return;
+      }
+
+      if (eventName === "phase") {
+        const name = data.name || "phase";
+        appendFlow(assistantView, `阶段：${name}`, data.detail || "服务端进入新的执行阶段。", data, false, "backend");
+        setStatus(name, true);
+        return;
+      }
+
+      if (eventName === "ledger") {
+        const step = data.step || "ledger";
+        setStatus(step, true);
+        return;
+      }
+
+      if (eventName === "plan") {
+        const action = data.action || "unknown";
+        const tool = data.tool_name ? `，工具：${data.tool_name}` : "";
+        appendFlow(assistantView, "计划", `action=${action}${tool}。${data.reason || ""}`, data, false, "backend");
+        setStatus("planned", true);
+        return;
+      }
+
+      if (eventName === "permission") {
+        const decision = data.decision || "unknown";
+        appendFlow(assistantView, "权限裁决", `${data.tool_name || "tool"} => ${decision}`, data, decision === "deny", "backend");
+        setStatus(`permission: ${decision}`, true);
+        return;
+      }
+
+      if (eventName === "tool_start") {
+        appendFlow(assistantView, "工具开始", `开始执行 ${data.tool_name || "tool"}`, data, false, "backend");
+        setStatus("tool running", true);
+        return;
+      }
+
+      if (eventName === "tool_result") {
+        const ok = data.ok === true;
+        const summary = ok ? summarizeToolResult(data) : (data.error || "工具执行失败");
+        appendFlow(assistantView, "工具结果", summary, data, !ok, "backend");
+        setStatus(ok ? "tool done" : "tool failed", true);
+        return;
+      }
+
+      if (eventName === "done") {
+        appendFlow(
+          assistantView,
+          "完成",
+          `本轮状态：${data.status || "unknown"}；技能：${(data.selected_skills || []).join(", ") || "无"}；是否需要审批：${data.needs_approval ? "是" : "否"}`,
+          data,
+          false,
+          "frontend"
+        );
+        if (data.pending_approval) {
+          assistantView.pendingApproval = data.pending_approval;
+          showApprovalAction(assistantView, "本轮没有执行工具，因为还没有获得审批。", data.pending_approval);
+        }
+        setStatus("done", false);
+        return;
+      }
+
+      appendFlow(assistantView, eventName, "收到服务端事件。", data, false, "backend");
+    }
+
+    function nextWaitingStage(eventName, data) {
+      if (eventName === "ledger") {
+        const step = data.step || "";
+        if (step === "context") return "模型规划行动计划";
+        if (step === "plan") return "权限裁决";
+        if (step.startsWith("permission")) return "工具调度";
+        if (step.startsWith("tool-")) return "工具执行";
+        if (step.startsWith("tool-result")) return "生成最终回答";
+        if (step === "answer") return "更新会话状态";
+        return `等待下一步：${step || "ledger"}`;
+      }
+      if (eventName === "phase") {
+        return data.name === "planning" ? "模型规划行动计划" : "生成最终回答";
+      }
+      if (eventName === "approval_required") return "等待用户审批";
+      if (eventName === "approval_resolved") return data.decision === "approved" ? "恢复工具执行" : "结束当前执行";
+      if (eventName === "plan") return "权限裁决或工具执行";
+      if (eventName === "permission") return data.decision === "ask" ? "等待审批提示" : "工具执行";
+      if (eventName === "tool_start") return "工具执行";
+      if (eventName === "tool_result") return "生成最终回答";
+      if (eventName === "answer_delta") return "继续接收回答内容";
+      return "服务端下一步事件";
+    }
+
+    function scheduleWaitNotice(assistantView, stage) {
+      clearWaitNotice();
+      waitingStage = stage || "服务端响应";
+      lastEventAt = Date.now();
+      waitTimer = window.setTimeout(() => {
+        activeWaitRow = appendFlow(
+          assistantView,
+          "等待中",
+          `${waitingStage}已等待 1 秒，服务端仍在处理。`,
+          {stage: waitingStage, elapsed_seconds: 1},
+          false,
+          "frontend"
+        );
+        waitInterval = window.setInterval(() => {
+          if (!activeWaitRow) return;
+          const elapsed = Math.max(1, Math.floor((Date.now() - lastEventAt) / 1000));
+          const summary = activeWaitRow.querySelector(".flow-summary");
+          const pre = activeWaitRow.querySelector("pre");
+          if (summary) {
+            summary.textContent = `${waitingStage}已等待 ${elapsed} 秒，服务端仍在处理。`;
+          }
+          if (pre) {
+            pre.textContent = JSON.stringify({stage: waitingStage, elapsed_seconds: elapsed}, null, 2);
+          }
+        }, 1000);
+      }, 1000);
+    }
+
+    function clearWaitNotice() {
+      if (waitTimer) {
+        window.clearTimeout(waitTimer);
+        waitTimer = null;
+      }
+      if (waitInterval) {
+        window.clearInterval(waitInterval);
+        waitInterval = null;
+      }
+      if (activeWaitRow) {
+        const elapsed = Math.max(1, Math.floor((Date.now() - lastEventAt) / 1000));
+        const summary = activeWaitRow.querySelector(".flow-summary");
+        if (summary) {
+          summary.textContent = `${waitingStage}等待完成，用时约 ${elapsed} 秒。`;
+        }
+        activeWaitRow = null;
+      }
+    }
+
+    function showApprovalAction(assistantView, reason, approvalData) {
+      if (assistantView.approvalShown || !approvalData || !approvalData.approval_id) return;
+      assistantView.approvalShown = true;
+
+      const actions = document.createElement("div");
+      actions.className = "approval-actions";
+      assistantView.approvalActions = actions;
+
+      const text = document.createElement("div");
+      text.className = "approval-text";
+      text.textContent = `${reason} 可以直接审批当前票据并从原执行位置继续。`;
+
+      const approveButton = document.createElement("button");
+      approveButton.type = "button";
+      approveButton.className = "inline-action";
+      approveButton.textContent = "批准并继续";
+      approveButton.disabled = Boolean(currentController);
+
+      const denyButton = document.createElement("button");
+      denyButton.type = "button";
+      denyButton.className = "inline-action secondary";
+      denyButton.textContent = "拒绝执行";
+      denyButton.disabled = Boolean(currentController);
+
+      approvalButtons.add(approveButton);
+      approvalButtons.add(denyButton);
+
+      approveButton.addEventListener("click", async () => {
+        if (currentController) return;
+        approvalButtons.delete(approveButton);
+        approvalButtons.delete(denyButton);
+        approveButton.disabled = true;
+        denyButton.disabled = true;
+        approveButton.textContent = "继续执行中";
+        await streamApprovalDecision(assistantView, approvalData.approval_id, true);
+      });
+
+      denyButton.addEventListener("click", async () => {
+        if (currentController) return;
+        approvalButtons.delete(approveButton);
+        approvalButtons.delete(denyButton);
+        approveButton.disabled = true;
+        denyButton.disabled = true;
+        denyButton.textContent = "拒绝处理中";
+        await streamApprovalDecision(assistantView, approvalData.approval_id, false);
+      });
+
+      actions.append(text, approveButton, denyButton);
+      assistantView.flow.append(actions);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function enableApprovalButtons() {
+      for (const button of approvalButtons) {
+        button.disabled = false;
+      }
+    }
+
+    function disableApprovalButtons() {
+      for (const button of approvalButtons) {
+        button.disabled = true;
+      }
+    }
+
+    function appendFlow(assistantView, title, summary, data, isError = false, source = "frontend") {
+      const row = document.createElement("div");
+      row.className = `flow-row${isError ? " error" : ""}`;
+
+      const head = document.createElement("div");
+      head.className = "flow-head";
+
+      const headLeft = document.createElement("div");
+      headLeft.className = "flow-head-left";
+
+      const name = document.createElement("span");
+      name.textContent = title;
+
+      const sourceBadge = document.createElement("span");
+      sourceBadge.className = `flow-source ${source === "backend" ? "backend" : "frontend"}`;
+      sourceBadge.textContent = source === "backend" ? "后端事件" : "前端状态";
+
+      const time = document.createElement("span");
+      time.className = "flow-time";
+      time.textContent = new Date().toLocaleTimeString();
+
+      const summaryNode = document.createElement("div");
+      summaryNode.className = "flow-summary";
+      summaryNode.textContent = summary || "无摘要";
+
+      headLeft.append(name, sourceBadge);
+      head.append(headLeft, time);
+      row.append(head, summaryNode);
+
+      if (data !== undefined) {
+        const details = document.createElement("details");
+        const detailsSummary = document.createElement("summary");
+        detailsSummary.textContent = "查看事件数据";
+
+        const pre = document.createElement("pre");
+        pre.textContent = JSON.stringify(data, null, 2);
+
+        details.append(detailsSummary, pre);
+        row.append(details);
+      }
+
+      assistantView.flow.append(row);
+      messages.scrollTop = messages.scrollHeight;
+      return row;
+    }
+
+    function summarizeToolResult(data) {
+      const result = data.result || {};
+      if (result.json) {
+        const value = result.json;
+        if (Array.isArray(value)) {
+          return `工具成功，返回 ${value.length} 条 JSON 结果。`;
+        }
+        const name = value.name || value.code || result.script || data.tool_name;
+        const price = value.current_price !== undefined ? `，当前价格：${value.current_price}` : "";
+        const change = value.change_percent !== undefined ? `，涨跌幅：${value.change_percent}%` : "";
+        return `工具成功，${name || "已返回 JSON"}${price}${change}`;
+      }
+      if (result.stdout) {
+        return `工具成功，输出：${String(result.stdout).slice(0, 160)}`;
+      }
+      return "工具成功。";
+    }
+
+    function payloadPreview(text, options = {}) {
+      return {
+        message: text,
+        session_id: sessionId,
+        auto_approve_tools: Boolean(options.forceAutoApprove) || autoApprove.checked
+      };
+    }
+
+    function appendLedgerEntry(entry) {
+      if (ledgerRuns.querySelector(".empty")) {
+        ledgerRuns.innerHTML = "";
+      }
+
+      const runId = entry.run_id || "unknown-run";
+      let runView = ledgerRunViews.get(runId);
+      if (!runView) {
+        runView = createLedgerRun(runId);
+        ledgerRunViews.set(runId, runView);
+        ledgerRuns.prepend(runView.container);
+      }
+
+      const item = document.createElement("div");
+      item.className = "ledger-item";
+
+      const head = document.createElement("div");
+      head.className = "ledger-item-head";
+
+      const main = document.createElement("div");
+      main.className = "ledger-item-main";
+
+      const step = document.createElement("div");
+      step.className = "ledger-step";
+      step.textContent = `账本：${entry.step || "unknown"}`;
+
+      const meta = document.createElement("div");
+      meta.className = "ledger-step-meta";
+      meta.textContent = [
+        entry.step_id || "no-step-id",
+        entry.state || "no-state",
+        formatTimestamp(entry.timestamp)
+      ].filter(Boolean).join(" | ");
+
+      const detail = document.createElement("div");
+      detail.className = "ledger-detail";
+      detail.textContent = entry.detail || "无详情";
+
+      const status = document.createElement("span");
+      const statusMeta = ledgerStatusMeta(entry.status);
+      status.className = `ledger-status ${statusMeta.className}`;
+      status.textContent = statusMeta.label;
+
+      main.append(step, meta);
+      head.append(main, status);
+      item.append(head, detail);
+
+      if (entry.data && Object.keys(entry.data).length) {
+        const details = document.createElement("details");
+        const detailsSummary = document.createElement("summary");
+        detailsSummary.textContent = "查看账本数据";
+        const pre = document.createElement("pre");
+        pre.textContent = JSON.stringify(entry.data, null, 2);
+        details.append(detailsSummary, pre);
+        item.append(details);
+      }
+
+      runView.list.append(item);
+      runView.count += 1;
+      runView.meta.textContent = `run_id: ${runId} | ${runView.count} 条账本 | 最新：${statusMeta.label}`;
+      if (runView.badge) {
+        runView.badge.className = `ledger-status ${statusMeta.className}`;
+        runView.badge.textContent = statusMeta.label;
+      }
+    }
+
+    function createLedgerRun(runId) {
+      const container = document.createElement("section");
+      container.className = "ledger-run";
+
+      const head = document.createElement("div");
+      head.className = "ledger-run-head";
+
+      const titleWrap = document.createElement("div");
+      titleWrap.className = "ledger-run-title";
+
+      const name = document.createElement("div");
+      name.className = "ledger-run-name";
+      name.textContent = `批次 ${runId.slice(0, 8)}`;
+
+      const meta = document.createElement("div");
+      meta.className = "ledger-run-meta";
+      meta.textContent = `run_id: ${runId}`;
+
+      const badge = document.createElement("span");
+      const statusMeta = ledgerStatusMeta("running");
+      badge.className = `ledger-status ${statusMeta.className}`;
+      badge.textContent = statusMeta.label;
+
+      titleWrap.append(name, meta);
+      head.append(titleWrap, badge);
+
+      const list = document.createElement("div");
+      list.className = "ledger-list";
+
+      container.append(head, list);
+      return {container, list, meta, badge, count: 0};
+    }
+
+    function appendModelRequest(data) {
+      if (modelCalls.querySelector(".empty")) {
+        modelCalls.innerHTML = "";
+      }
+
+      const callView = ensureModelCall(data);
+      const count = data.message_count ?? (Array.isArray(data.messages) ? data.messages.length : 0);
+      callView.requestSummary.textContent = `共 ${count} 条消息；transport=${data.transport || "unknown"}；model=${data.model || "default"}`;
+      callView.requestPre.textContent = JSON.stringify(data.messages || [], null, 2);
+      callView.meta.textContent = `call_id: ${data.call_id || "unknown"} | run_id: ${data.run_id || "unknown"}`;
+      callView.status.className = "ledger-status running";
+      callView.status.textContent = "请求已发送";
+      callView.responseSummary.textContent = "等待模型返回。";
+      callView.responseStream.textContent = "";
+      callView.responsePre.textContent = "";
+    }
+
+    function appendModelDelta(data) {
+      const callView = ensureModelCall(data);
+      callView.status.className = "ledger-status running";
+      callView.status.textContent = "流式返回中";
+      callView.responseSummary.textContent = `已接收 ${data.index || "?"} 个片段。`;
+      callView.responseStream.textContent += data.text || "";
+    }
+
+    function appendModelResponse(data) {
+      const callView = ensureModelCall(data);
+      const source = data.source || "model";
+      const hasError = Boolean(data.error);
+      callView.status.className = `ledger-status ${hasError ? "failed" : "completed"}`;
+      callView.status.textContent = hasError ? `完成（${source}，有降级）` : `完成（${source}）`;
+      callView.responseSummary.textContent = hasError
+        ? `模型阶段结束：${source}；error=${data.error}`
+        : `模型阶段结束：${source}`;
+      callView.responseStream.textContent = data.output_text || "";
+      callView.responsePre.textContent = JSON.stringify(data, null, 2);
+    }
+
+    function ensureModelCall(data) {
+      const callId = data.call_id || `${data.run_id || "unknown"}:${data.stage || "unknown"}`;
+      let view = modelCallViews.get(callId);
+      if (view) {
+        return view;
+      }
+
+      const container = document.createElement("section");
+      container.className = "model-call";
+
+      const head = document.createElement("div");
+      head.className = "model-call-head";
+
+      const titleWrap = document.createElement("div");
+      titleWrap.className = "model-call-title";
+
+      const name = document.createElement("div");
+      name.className = "model-call-name";
+      name.textContent = `${data.stage || "unknown"} / ${data.transport || "unknown"}`;
+
+      const meta = document.createElement("div");
+      meta.className = "model-call-meta";
+      meta.textContent = `call_id: ${callId}`;
+
+      const status = document.createElement("span");
+      status.className = "ledger-status running";
+      status.textContent = "准备中";
+
+      titleWrap.append(name, meta);
+      head.append(titleWrap, status);
+
+      const body = document.createElement("div");
+      body.className = "model-call-body";
+
+      const requestBlock = document.createElement("div");
+      requestBlock.className = "model-block";
+      const requestHead = document.createElement("div");
+      requestHead.className = "model-block-head";
+      const requestTitle = document.createElement("div");
+      requestTitle.className = "model-block-title";
+      requestTitle.textContent = "系统 -> 模型";
+      const requestSummary = document.createElement("div");
+      requestSummary.className = "model-block-summary";
+      requestSummary.textContent = "等待请求内容。";
+      requestHead.append(requestTitle, requestSummary);
+      const requestDetails = document.createElement("details");
+      const requestDetailsSummary = document.createElement("summary");
+      requestDetailsSummary.textContent = "查看 messages";
+      const requestPre = document.createElement("pre");
+      requestDetails.append(requestDetailsSummary, requestPre);
+      requestBlock.append(requestHead, requestDetails);
+
+      const responseBlock = document.createElement("div");
+      responseBlock.className = "model-block";
+      const responseHead = document.createElement("div");
+      responseHead.className = "model-block-head";
+      const responseTitle = document.createElement("div");
+      responseTitle.className = "model-block-title";
+      responseTitle.textContent = "模型 -> 系统";
+      const responseSummary = document.createElement("div");
+      responseSummary.className = "model-block-summary";
+      responseSummary.textContent = "等待模型返回。";
+      responseHead.append(responseTitle, responseSummary);
+      const responseStream = document.createElement("div");
+      responseStream.className = "model-stream";
+      const responseDetails = document.createElement("details");
+      const responseDetailsSummary = document.createElement("summary");
+      responseDetailsSummary.textContent = "查看返回细节";
+      const responsePre = document.createElement("pre");
+      responseDetails.append(responseDetailsSummary, responsePre);
+      responseBlock.append(responseHead, responseStream, responseDetails);
+
+      body.append(requestBlock, responseBlock);
+      container.append(head, body);
+      modelCalls.prepend(container);
+
+      view = {
+        container,
+        meta,
+        status,
+        requestSummary,
+        requestPre,
+        responseSummary,
+        responseStream,
+        responsePre
+      };
+      modelCallViews.set(callId, view);
+      return view;
+    }
+
+    function appendBackendEvent(name, data) {
+      if (backendEvents.querySelector(".empty")) {
+        backendEvents.innerHTML = "";
+      }
+
+      const item = document.createElement("div");
+      item.className = "event";
+
+      const header = document.createElement("div");
+      header.className = "event-name";
+      header.innerHTML = `<span>${escapeHtml(name)}</span><span>${new Date().toLocaleTimeString()}</span>`;
+
+      const pre = document.createElement("pre");
+      pre.textContent = JSON.stringify(data, null, 2);
+
+      item.append(header, pre);
+      backendEvents.prepend(item);
+    }
+
+    function clearEvents() {
+      ledgerRunViews.clear();
+      modelCallViews.clear();
+      ledgerRuns.innerHTML = '<div class="empty">等待账本记录</div>';
+      modelCalls.innerHTML = '<div class="empty">等待模型交互</div>';
+      backendEvents.innerHTML = '<div class="empty">等待后端事件</div>';
+    }
+
+    function ledgerStatusMeta(status) {
+      if (status === "completed") {
+        return {label: "完成 ✔", className: "completed"};
+      }
+      if (status === "running") {
+        return {label: "执行中", className: "running"};
+      }
+      if (status === "pending" || status === "pending_approval") {
+        return {label: "等待中", className: "pending"};
+      }
+      if (status === "failed" || status === "denied") {
+        return {label: "失败", className: "failed"};
+      }
+      return {label: status || "未知", className: "running"};
+    }
+
+    function formatTimestamp(value) {
+      if (!value) return "";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return value;
+      return date.toLocaleTimeString();
+    }
+
+    function setStatus(text, live) {
+      statusText.textContent = text;
+      statusDot.classList.toggle("live", live);
+    }
+
+    function updateSessionLabel() {
+      sessionLabel.textContent = sessionId ? `session: ${sessionId}` : "session: new";
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+  </script>
+</body>
+</html>

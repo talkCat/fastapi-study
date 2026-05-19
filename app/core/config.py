@@ -14,6 +14,9 @@ class Settings(BaseSettings):
     secret_key: str = "your-secret-key-change-in-production"
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
+    openai_api_key: str | None = None
+    openai_model: str = "gpt-5.4-mini"
+    openai_base_url: str | None = None
 
     @field_validator("debug", mode="before")
     @classmethod

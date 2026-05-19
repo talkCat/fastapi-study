@@ -1,0 +1,13 @@
+{
+  "package": "python",
+  "module": "python_tools.py",
+  "tools": [
+    {
+      "name": "python.exec",
+      "description": "Execute Python code in a subprocess for calculations, data processing, and batch logic.",
+      "risk_level": "high",
+      "parallel_safe": false,
+      "handler": "exec_python"
+    }
+  ]
+}

@@ -16,9 +16,17 @@ fastapi-study/
 │   │       ├── __init__.py
 │   │       ├── auth.py         # 认证接口
 │   │       ├── demo_records.py # 教学示例：controller/service/dao 全流程
+│   │       ├── chat_agent.py   # Harness 风格聊天智能体接口
 │   │       ├── learning.py     # 异步与高并发学习接口
 │   │       ├── users.py        # 用户接口
 │   │       └── items.py        # 物品接口
+│   ├── agents/                 # Harness 风格智能体运行时
+│   │   ├── harness.py          # Query Loop / 权限 / 工具账本
+│   │   ├── model_client.py     # OpenAI 兼容模型客户端
+│   │   ├── skill_runtime.py    # Skill manifest 到 Tool 的通用适配器
+│   │   ├── skills.py           # 可插拔 Skill 注册与安装
+│   │   ├── tools.py            # 受管 Tool 注册与执行
+│   │   └── types.py            # Agent 内部类型
 │   ├── core/
 │   │   ├── __init__.py
 │   │   ├── config.py           # 配置管理
@@ -50,6 +58,7 @@ fastapi-study/
 │   ├── async_concurrency_guide.md
 │   ├── database_query_and_response_guide.md
 │   ├── openai_chat_agent_learning_plan.md
+│   ├── skill_runtime_adapter_guide.md
 │   ├── skills_vs_tools_guide.md
 │   └── python_syntax_notes.md
 ├── .env                        # 环境变量（本地）
@@ -234,6 +243,61 @@ database (数据库)    - 数据持久化
 | POST | /api/v1/learning/knowledge-ingest-demo | 演示 PDF 知识入库任务的提交 |
 | GET | /api/v1/learning/knowledge-ingest-demo/{task_id} | 查询知识入库流水线的阶段状态 |
 
+### Harness 聊天智能体接口
+
+页面入口：
+ 
+- `GET /chat`：打开流式聊天页面
+
+| 方法 | 路径 | 说明 |
+|------|------|------|
+| POST | /api/v1/chat-agent/chat | 与聊天智能体交互，支持技能选择、工具调用和执行账本 |
+| POST | /api/v1/chat-agent/chat/stream | 流式聊天接口，使用 `text/event-stream` 返回 Harness 事件和回答分片 |
+| GET | /api/v1/chat-agent/skills | 查看当前可用技能 |
+| POST | /api/v1/chat-agent/skills/install | 安装已解压的技能包目录，目录内必须包含 `SKILL.md` |
+| GET | /api/v1/chat-agent/tools | 查看当前受管工具 |
+
+智能体实现位置：
+
+- Query Loop / Harness：`app/agents/harness.py`
+- 模型客户端：`app/agents/model_client.py`
+- Skill 注册和安装：`app/agents/skills.py`
+- Skill Runtime Adapter：`app/agents/skill_runtime.py`
+- Tool 注册和权限：`app/agents/tools.py`
+- Service：`app/services/chat_agent.py`
+- Router：`app/api/routers/chat_agent.py`
+
+第一版支持：
+
+- 从 `.env` 读取 `OPENAI_API_KEY`、`OPENAI_MODEL`、`OPENAI_BASE_URL`
+- 使用 OpenAI 兼容 `chat.completions` 接口
+- 加载仓库内 `.agents/skills/` 的技能
+- 安装已解压技能包到 `app/agents/installed_skills/`
+- 读取 Skill 包内 `agents/tools.json`，自动注册 manifest 声明的脚本工具
+- 对没有 `agents/tools.json` 的开源 Skill，提供 `skill.scripts.list` 和 `skill.python.run` 通用兜底工具
+- 调用独立 Tool 目录中的天气工具 `.agents/tools/weather/`
+- 调用独立 Tool 目录中的 DOCX 工具 `.agents/tools/docx/`
+- 返回 `ledger`，展示上下文治理、计划、权限裁决、工具执行和回答阶段
+- 流式接口按 SSE 事件返回：`ledger`、`plan`、`permission`、`tool_start`、`tool_result`、`answer_delta`、`done`
+
+当前内置 Tool：
+
+| Tool | 风险 | 说明 |
+|------|------|------|
+| echo | low | 测试工具，返回输入文本 |
+| weather.current | low | 查询当前天气 |
+| docx.inspect | low | 检查 `.docx` 段落、表格、样式、OOXML parts、评论、修订风险 |
+| docx.extract_text | low | 提取 `.docx` 正文和表格文本 |
+| docx.create | medium | 新建 `.docx` 文件 |
+| docx.replace_text | medium | 保守替换 `.docx` 文本并保存到新文件 |
+| skill.scripts.list | low | 列出某个 Skill 包里的 Python 脚本 |
+| skill.python.run | medium | 执行某个 Skill 包里的 Python 脚本，需要审批或自动批准 |
+| skill.weather.normalize-location | low | 由 weather Skill manifest 自动适配的位置规范化工具 |
+| skill.weather.build-wttr-query | low | 由 weather Skill manifest 自动适配的 wttr.in URL 构造工具 |
+| skill.weather.build-open-meteo-query | low | 由 weather Skill manifest 自动适配的 Open-Meteo URL 构造工具 |
+
+`medium` 风险工具默认需要审批；如果明确允许自动执行，可以在请求里传 `auto_approve_tools=true`，或在聊天页面勾选“自动批准工具”。
+
 ## Make 命令
 
 ```bash
@@ -320,6 +384,9 @@ make clean        # 清理缓存
 | SECRET_KEY | JWT密钥 | - |
 | HOST | 监听地址 | 0.0.0.0 |
 | PORT | 监听端口 | 8000 |
+| OPENAI_API_KEY | OpenAI 或兼容网关密钥 | - |
+| OPENAI_MODEL | 聊天智能体默认模型 | gpt-5.4-mini |
+| OPENAI_BASE_URL | OpenAI 兼容网关地址；官方接口可留空 | - |
 
 鉴权开关说明：
 

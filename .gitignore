@@ -28,3 +28,5 @@ htmlcov/
 *~
 
 postgres_data/
+app/agents/installed_skills/*
+!app/agents/installed_skills/README.md

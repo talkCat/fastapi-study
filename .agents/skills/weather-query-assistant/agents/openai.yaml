@@ -1,4 +1,0 @@
-interface:
-  display_name: "Weather"
-  short_description: "Get current weather and forecasts without an API key"
-  default_prompt: "Use Weather for current weather and short forecast questions. Prefer wttr.in first, and use Open-Meteo as a JSON-friendly fallback."

@@ -14,6 +14,9 @@
    - 理解 Harness Engineering 的核心定位
    - 学习九大设计原则
    - 用小型 Python 示例模拟 Prompt 拼装、权限裁决、上下文预算、错误恢复和独立验证
+2. `002-streaming-chat-agent-flow.ipynb`
+   - 理解当前项目真实流式问答智能体的完整请求链路
+   - 学习系统如何控制 AI：规划、权限、工具、账本、流式回答
+   - 用 FakeModelClient 观察不依赖真实模型的 Harness 事件流
 
 这组 Notebook 不依赖 OpenAI API。重点是从工程结构上理解“如何约束一个能改代码、能跑命令、能持续工作的 AI 编码代理”。
-

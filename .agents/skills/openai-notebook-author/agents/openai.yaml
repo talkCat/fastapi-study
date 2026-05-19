@@ -1,5 +1,0 @@
-interface:
-  display_name: "OpenAI Notebook Author"
-  short_description: "Create or update teaching notebooks in this repo"
-  default_prompt: "Use OpenAI Notebook Author when adding or revising numbered teaching notebooks under notebooks/openai or notebooks/codex."
-

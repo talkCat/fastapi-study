@@ -31,6 +31,7 @@
 如果开始学习 Claude Code 这类编码代理的交互模式和工程约束，可以单独分目录：
 
 - `harness-engineering/001-claude-code-harness-engineering.ipynb`
+- `harness-engineering/002-streaming-chat-agent-flow.ipynb`
 
 这样做的好处是：
 
@@ -213,6 +214,7 @@ OPENAI_BASE_URL=http://192.168.102.19:8082/v1
 如果你想学习 Claude Code 这类交互式编码代理背后的工程设计，可以看：
 
 - `harness-engineering/001-claude-code-harness-engineering.ipynb`
+- `harness-engineering/002-streaming-chat-agent-flow.ipynb`
 
 这一份围绕一个核心观点展开：
 
@@ -229,3 +231,5 @@ Prompt 决定模型怎么说话，Harness 决定模型怎么做事。
 5. 如何把个人 AI 编码工具升级成团队可复用的工程系统
 
 这一组 Notebook 不依赖 OpenAI API，适合在理解 `codex/001`、`skills_vs_tools_guide.md` 和 `agent-practice/001` 之后学习。
+
+第二份 `002-streaming-chat-agent-flow.ipynb` 会结合当前项目真实实现，解释 `/chat` 页面、`/api/v1/chat-agent/chat/stream`、`HarnessChatAgent.stream_chat(...)`、Skill 选择、Tool 权限裁决、模型规划和 SSE 事件返回的完整流程。

@@ -1,8 +1,11 @@
+from pathlib import Path
+
 from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
-from app.api.routers import users, items, auth, learning, demo_records
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
+from app.api.routers import users, items, auth, learning, demo_records, chat_agent
 from app.core.config import settings
 from app.core.executors import shutdown_executors
 from app.core.responses import success_response
@@ -28,6 +31,11 @@ app.include_router(users.router, prefix="/api/v1")
 app.include_router(items.router, prefix="/api/v1")
 app.include_router(learning.router, prefix="/api/v1")
 app.include_router(demo_records.router, prefix="/api/v1")
+app.include_router(chat_agent.router, prefix="/api/v1")
+
+STATIC_DIR = Path(__file__).resolve().parent / "static"
+if STATIC_DIR.exists():
+    app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 
 @app.get("/")
@@ -42,6 +50,11 @@ def root():
 @app.get("/health")
 def health_check():
     return success_response({"status": "healthy", "debug": settings.debug}, message="健康检查通过")
+
+
+@app.get("/chat")
+def chat_page():
+    return FileResponse(STATIC_DIR / "chat" / "index.html")
 
 
 @app.exception_handler(HTTPException)

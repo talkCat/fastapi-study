@@ -58,6 +58,7 @@ This track already covers:
 5. minimal stock-agent demo
 6. weather assistant agent practice with a repo-local Skill-backed tool
 7. Harness Engineering principles for Claude Code style coding agents
+8. a real FastAPI chat agent runtime under `app/agents/`
 
 ### Harness Engineering / Claude Code design track
 
@@ -65,6 +66,7 @@ Main references:
 
 - `notebooks/harness-engineering/README.md`
 - `notebooks/harness-engineering/001-claude-code-harness-engineering.ipynb`
+- `notebooks/harness-engineering/002-streaming-chat-agent-flow.ipynb`
 - `docs/skills_vs_tools_guide.md`
 
 This track teaches:
@@ -76,6 +78,7 @@ This track teaches:
 5. Error recovery as the main path, not an edge case
 6. Sub-agent isolation and independent verification
 7. Team policy as the basis for reliable agent adoption
+8. The real streaming chat agent flow implemented in this repo
 
 ### Codex / Skills learning track
 
@@ -101,6 +104,30 @@ Repo-local Skills already created:
 Repo-local Tools already created:
 
 - `.agents/tools/weather/`
+- `.agents/tools/docx/`
+
+Implemented app agent runtime:
+
+- `app/agents/harness.py`
+- `app/agents/model_client.py`
+- `app/agents/skill_runtime.py`
+- `app/agents/skills.py`
+- `app/agents/tools.py`
+- `app/api/routers/chat_agent.py`
+- `app/services/chat_agent.py`
+- `app/schemas/chat_agent.py`
+
+This runtime follows the Harness Engineering teaching track:
+
+1. model access is isolated behind `ModelClient`
+2. Query Loop records a ledger
+3. skills are loaded from `.agents/skills/` and installable from unpacked packages
+4. tools are registered separately from skills
+5. low-risk tools can run automatically; higher-risk tools are designed to require approval
+6. `/api/v1/chat-agent/chat/stream` streams Harness events over SSE with `answer_delta` chunks
+7. `word-docx` Skill is paired with managed DOCX Tools: `docx.inspect`, `docx.extract_text`, `docx.create`, `docx.replace_text`
+8. Skill packages can expose scripts as tools through `agents/tools.json`, adapted by `app/agents/skill_runtime.py`
+9. Skills without `agents/tools.json` can still use generic tools: `skill.scripts.list` and `skill.python.run`; the runner is medium risk and requires approval
 
 This track now contains a complete 10-lesson weather-skill line that teaches:
 
@@ -204,12 +231,16 @@ Related tool files:
 
 - `.agents/tools/weather/fetch_weather.py`
 - `.agents/tools/weather/validate_weather_tool.py`
+- `.agents/tools/docx/docx_tool.py`
+- `.agents/tools/docx/validate_docx_tool.py`
+- `docs/skill_runtime_adapter_guide.md`
 
 Current state:
 
 - has a primary `wttr.in` query-building path
 - has an Open-Meteo fallback query-building path
 - uses a separated structured weather tool under `.agents/tools/weather/`
+- uses separated DOCX tools under `.agents/tools/docx/` for the `word-docx` Skill
 - has a minimal validation script
 - is the canonical teaching example for the Codex / Skills notebook series
 
@@ -241,6 +272,15 @@ If the request is about Harness Engineering, Claude Code interaction patterns, o
 3. explain reliability through Prompt control plane, Query Loop, Tool permissions, Context budget, Recovery, independent verification, and team policy
 4. avoid claiming exact Claude Code source behavior unless source files are actually present or cited
 
+If the request is about the implemented chat agent runtime:
+
+1. inspect `app/agents/` first
+2. keep Skills and Tools separated: installable skills under `app/agents/installed_skills/` or `.agents/skills/`, callable tools under `.agents/tools/` or `app/agents/tools.py`
+3. preserve the Harness ledger and permission checks when adding new capabilities
+4. use fake `ModelClient` implementations in tests to avoid live LLM calls
+5. for downloaded Skill packages, prefer `agents/tools.json` manifest adaptation when available
+6. for Skill Hub packages without manifests, use `skill.scripts.list` before `skill.python.run`; do not bypass permission checks
+
 If the request is about Skills / Codex / OpenClaw-style workflow:
 
 1. read `docs/skills_vs_tools_guide.md`
@@ -259,7 +299,8 @@ If the user asks what to build next, these are the most natural follow-ups:
 2. connect the stock-agent demo to a real FastAPI endpoint
 3. keep extending the OpenAI learning notebooks in small, staged lessons
 4. continue the Harness Engineering series with a minimal query-loop implementation
-5. refine `AGENTS.md` when major repo context changes
+5. connect more tools into `app/agents/tools.py`
+6. refine `AGENTS.md` when major repo context changes
 
 ## Things To Avoid
 
@@ -280,5 +321,6 @@ This repo is a staged learning workspace for:
 - real repo-local Skill development
 - a complete weather-skill teaching line from minimal Skill to validated workflow
 - Harness Engineering principles for reliable coding-agent systems
+- a real Harness-style FastAPI chat agent that can load Skills and call managed Tools
 
 When unsure, continue by preserving teaching clarity, concrete examples, and the repo's existing staged learning structure.

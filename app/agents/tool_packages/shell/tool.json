@@ -1,0 +1,20 @@
+{
+  "package": "shell",
+  "module": "shell_tools.py",
+  "tools": [
+    {
+      "name": "shell.exec",
+      "description": "Execute a shell command inside the workspace and capture stdout/stderr.",
+      "risk_level": "high",
+      "parallel_safe": false,
+      "handler": "exec_command"
+    },
+    {
+      "name": "shell.list_processes",
+      "description": "List current processes using ps for debugging and agent runtime visibility.",
+      "risk_level": "medium",
+      "parallel_safe": true,
+      "handler": "list_processes"
+    }
+  ]
+}

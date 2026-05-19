@@ -1,0 +1,20 @@
+{
+  "package": "http",
+  "module": "http_tools.py",
+  "tools": [
+    {
+      "name": "http.get",
+      "description": "Perform an HTTP GET request and return text or JSON response data.",
+      "risk_level": "medium",
+      "parallel_safe": false,
+      "handler": "http_get"
+    },
+    {
+      "name": "http.post",
+      "description": "Perform an HTTP POST request with JSON body and return text or JSON response data.",
+      "risk_level": "medium",
+      "parallel_safe": false,
+      "handler": "http_post"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "package": "files",
+  "module": "file_tools.py",
+  "tools": [
+    {
+      "name": "fs.read_text",
+      "description": "Read a local text file, JSON file, or config file from the workspace.",
+      "risk_level": "low",
+      "parallel_safe": true,
+      "handler": "read_text"
+    },
+    {
+      "name": "fs.write_text",
+      "description": "Write text content to a local file inside the workspace, creating parent directories when needed.",
+      "risk_level": "medium",
+      "parallel_safe": false,
+      "handler": "write_text"
+    },
+    {
+      "name": "fs.write_json",
+      "description": "Write JSON content to a local file inside the workspace.",
+      "risk_level": "medium",
+      "parallel_safe": false,
+      "handler": "write_json"
+    },
+    {
+      "name": "fs.list_dir",
+      "description": "List files and directories under a local path inside the workspace.",
+      "risk_level": "low",
+      "parallel_safe": true,
+      "handler": "list_dir"
+    }
+  ]
+}
