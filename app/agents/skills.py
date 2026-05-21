@@ -183,6 +183,19 @@ def _load_skill_contract(skill_dir: Path, frontmatter: dict[str, Any], body: str
     if not keywords:
         keywords = _infer_keywords(frontmatter, body)
 
+    inferred_routing = _infer_routing(skill_dir=skill_dir, frontmatter=frontmatter, body=body)
+    preferred_tools = _unique_strings(routing_data.get("preferred_tools"))
+    if not preferred_tools:
+        preferred_tools = inferred_routing["preferred_tools"]
+
+    planner_hint = str(routing_data.get("planner_hint")).strip() if routing_data.get("planner_hint") else None
+    if not planner_hint:
+        planner_hint = inferred_routing["planner_hint"]
+
+    answer_hint = str(routing_data.get("answer_hint")).strip() if routing_data.get("answer_hint") else None
+    if not answer_hint:
+        answer_hint = inferred_routing["answer_hint"]
+
     resolver_data = routing_data.get("resolver") if isinstance(routing_data.get("resolver"), dict) else None
     resolver = None
     if resolver_data and resolver_data.get("script"):
@@ -202,9 +215,9 @@ def _load_skill_contract(skill_dir: Path, frontmatter: dict[str, Any], body: str
             examples=_unique_strings(trigger_data.get("examples")),
         ),
         routing=SkillRouting(
-            preferred_tools=_unique_strings(routing_data.get("preferred_tools")),
-            planner_hint=str(routing_data.get("planner_hint")).strip() if routing_data.get("planner_hint") else None,
-            answer_hint=str(routing_data.get("answer_hint")).strip() if routing_data.get("answer_hint") else None,
+            preferred_tools=preferred_tools,
+            planner_hint=planner_hint,
+            answer_hint=answer_hint,
             resolver=resolver,
         ),
         metadata=metadata,
@@ -280,6 +293,75 @@ def _infer_keywords(frontmatter: dict[str, Any], body: str) -> list[str]:
                 continue
             candidates.append(cleaned)
     return _unique_strings(candidates[:24])
+
+
+def _infer_routing(skill_dir: Path, frontmatter: dict[str, Any], body: str) -> dict[str, Any]:
+    text = "\n".join(
+        str(value)
+        for value in (
+            frontmatter.get("name") or "",
+            frontmatter.get("description") or "",
+            frontmatter.get("metadata") or "",
+            body or "",
+        )
+    ).lower()
+    preferred_tools: list[str] = []
+    hint_parts: list[str] = []
+    answer_parts: list[str] = []
+
+    if _contains_shell_examples(text):
+        preferred_tools.extend(["shell.exec", "http.get"])
+        hint_parts.append("SKILL.md contains curl or shell command examples; prefer shell.exec for faithful command reproduction.")
+        answer_parts.append("If shell execution fails, explain the failing command and suggest a simpler retry.")
+
+    if _contains_http_examples(text):
+        preferred_tools.extend(["http.get", "http.post", "web_fetch"])
+        hint_parts.append("SKILL.md references HTTP endpoints; prefer http.get or http.post when a direct request is clearer than shell.exec.")
+
+    if _contains_search_examples(text):
+        preferred_tools.extend(["web.search", "web_fetch"])
+        hint_parts.append("SKILL.md references search or news lookup; prefer web.search first, then web_fetch for a specific result URL.")
+
+    if _skill_has_python_scripts(skill_dir):
+        preferred_tools.extend(["skill.scripts.list", "skill.python.run"])
+        hint_parts.append("This skill package contains Python scripts; inspect scripts with skill.scripts.list before running a specific script.")
+
+    if "```python" in text or re.search(r"\bpython(?:3)?\b", text):
+        preferred_tools.append("python.exec")
+        hint_parts.append("SKILL.md contains Python usage examples; python.exec can be used for small deterministic transformations.")
+
+    if _contains_file_workflow(text):
+        preferred_tools.extend(["fs.read_text", "fs.write_text", "fs.write_json", "fs.list_dir"])
+        hint_parts.append("SKILL.md mentions local files; use filesystem tools instead of inventing inline file content.")
+
+    return {
+        "preferred_tools": _unique_strings(preferred_tools),
+        "planner_hint": " ".join(hint_parts) if hint_parts else None,
+        "answer_hint": " ".join(answer_parts) if answer_parts else None,
+    }
+
+
+def _contains_shell_examples(text: str) -> bool:
+    return any(token in text for token in ["curl ", "bash ", "sh ", "terminal", "command line"])
+
+
+def _contains_http_examples(text: str) -> bool:
+    return "http://" in text or "https://" in text or "api" in text
+
+
+def _contains_search_examples(text: str) -> bool:
+    return any(token in text for token in ["search", "news", "bing", "duckduckgo", "google", "baidu", "sogou"])
+
+
+def _contains_file_workflow(text: str) -> bool:
+    return any(token in text for token in ["json file", "yaml", "toml", "config", "read file", "write file", ".md", ".txt"])
+
+
+def _skill_has_python_scripts(skill_dir: Path) -> bool:
+    scripts_dir = skill_dir / "scripts"
+    if not scripts_dir.exists() or not scripts_dir.is_dir():
+        return False
+    return any(path.is_file() and path.suffix == ".py" for path in scripts_dir.rglob("*.py"))
 
 
 def _score_skill_match(skill: SkillDescriptor, message: str, lowered: str) -> int:

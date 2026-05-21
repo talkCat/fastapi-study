@@ -1,8 +1,11 @@
 import importlib.util
+import inspect
 import json
 import sys
+from types import UnionType
 from pathlib import Path
-from typing import Any
+from typing import Any, Union
+from typing import get_args, get_origin
 
 from app.agents.skills import project_root
 from app.agents.types import ToolDefinition
@@ -57,6 +60,10 @@ class ToolRuntimeAdapter:
         if risk_level not in {"low", "medium", "high"}:
             raise ValueError(f"Invalid risk_level for tool {name}: {risk_level}")
 
+        input_schema = raw_tool.get("parameters")
+        if not isinstance(input_schema, dict):
+            input_schema = _infer_input_schema(module_path, handler_name)
+
         return ToolDefinition(
             name=name,
             description=str(raw_tool.get("description") or f"Tool from package {package_dir.name}"),
@@ -67,6 +74,7 @@ class ToolRuntimeAdapter:
                 module_path=module_path,
                 handler_name=handler_name,
             ),
+            input_schema=input_schema,
         )
 
     def _resolve_module_path(self, package_dir: Path, module: str) -> Path:
@@ -131,3 +139,62 @@ def _normalize_tool_arguments(arguments: dict[str, Any]) -> dict[str, Any]:
         if old_name in normalized and new_name not in normalized:
             normalized[new_name] = normalized.pop(old_name)
     return normalized
+
+
+def _infer_input_schema(module_path: Path, handler_name: str) -> dict[str, Any]:
+    module = _load_module(module_path, f"fastapi_study_tool_schema_{module_path.stem}_{handler_name}")
+    target = getattr(module, handler_name, None)
+    if target is None or not callable(target):
+        raise AttributeError(f"Handler not found: {handler_name} in {module_path}")
+
+    signature = inspect.signature(target)
+    properties: dict[str, Any] = {}
+    required: list[str] = []
+    for parameter in signature.parameters.values():
+        if parameter.kind not in (inspect.Parameter.POSITIONAL_OR_KEYWORD, inspect.Parameter.KEYWORD_ONLY):
+            continue
+        properties[parameter.name] = _annotation_to_json_schema(parameter.annotation)
+        if parameter.default is inspect._empty:
+            required.append(parameter.name)
+
+    schema: dict[str, Any] = {
+        "type": "object",
+        "properties": properties,
+        "additionalProperties": False,
+    }
+    if required:
+        schema["required"] = required
+    return schema
+
+
+def _annotation_to_json_schema(annotation: Any) -> dict[str, Any]:
+    if annotation is inspect._empty:
+        return {}
+
+    origin = get_origin(annotation)
+    if origin is None:
+        if annotation is str:
+            return {"type": "string"}
+        if annotation is int:
+            return {"type": "integer"}
+        if annotation is float:
+            return {"type": "number"}
+        if annotation is bool:
+            return {"type": "boolean"}
+        if annotation in {dict, Any}:
+            return {"type": "object"}
+        if annotation is list:
+            return {"type": "array"}
+        return {}
+
+    args = [item for item in get_args(annotation) if item is not type(None)]
+    if origin in {list, tuple, set}:
+        item_schema = _annotation_to_json_schema(args[0]) if args else {}
+        return {"type": "array", "items": item_schema}
+    if origin is dict:
+        return {"type": "object"}
+    if origin is UnionType:  # pragma: no cover
+        return _annotation_to_json_schema(args[0]) if args else {}
+    if origin is Union:
+        return _annotation_to_json_schema(args[0]) if args else {}
+    return {}

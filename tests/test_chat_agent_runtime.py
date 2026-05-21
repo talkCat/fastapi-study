@@ -16,12 +16,32 @@ from app.services.chat_agent import chat_agent_service
 
 class FakeModelClient:
     def __init__(self):
-        self.calls = 0
+        self.plan_calls = 0
+
+    def plan(self, messages, tools, model=None):
+        self.plan_calls += 1
+        self.last_plan_tools = tools
+        if self.plan_calls > 1:
+            return {
+                "content": "已经拿到工具结果，无需继续调用工具。",
+                "tool_calls": [],
+                "finish_reason": "stop",
+            }
+        return {
+            "content": "使用 echo 做冒烟测试",
+            "tool_calls": [
+                {
+                    "id": "call_echo",
+                    "type": "function",
+                    "name": "echo",
+                    "arguments": {"text": "hello"},
+                    "raw_arguments": '{"text":"hello"}',
+                }
+            ],
+            "finish_reason": "tool_calls",
+        }
 
     def chat(self, messages, model=None):
-        self.calls += 1
-        if self.calls == 1:
-            return '{"action":"tool","tool_name":"echo","arguments":{"text":"hello"},"reason":"test"}'
         return "最终回答：hello"
 
     def stream_chat(self, messages, model=None):
@@ -67,15 +87,41 @@ class ChatAgentRuntimeTests(unittest.TestCase):
         self.assertIn("answer_delta", event_names)
         self.assertEqual(events[-1]["event"], "done")
         self.assertEqual(events[-1]["data"]["answer"], "最终回答：hello")
+        planning_request = next(event for event in events if event["event"] == "model_request" and event["data"]["stage"] == "planning")
+        self.assertTrue(isinstance(planning_request["data"].get("tools"), list))
+        self.assertTrue(any(tool["function"]["name"] == "echo" for tool in planning_request["data"]["tools"]))
+        planning_response = next(event for event in events if event["event"] == "model_response" and event["data"]["stage"] == "planning")
+        self.assertEqual(planning_response["data"]["tool_calls"][0]["name"], "echo")
 
     def test_harness_creates_approval_ticket_and_resumes_from_checkpoint(self):
         class MediumRiskModelClient:
             def __init__(self):
-                self.calls = 0
+                self.plan_calls = 0
+
+            def plan(self, messages, tools, model=None):
+                self.plan_calls += 1
+                if self.plan_calls > 1:
+                    return {
+                        "content": "审批通过后已经拿到结果，可以直接回答。",
+                        "tool_calls": [],
+                        "finish_reason": "stop",
+                    }
+                return {
+                    "content": "需要审批后调用 medium.echo",
+                    "tool_calls": [
+                        {
+                            "id": "call_medium_echo",
+                            "type": "function",
+                            "name": "medium.echo",
+                            "arguments": {"text": "resume"},
+                            "raw_arguments": '{"text":"resume"}',
+                        }
+                    ],
+                    "finish_reason": "tool_calls",
+                }
 
             def chat(self, messages, model=None):
-                self.calls += 1
-                return '{"action":"tool","tool_name":"medium.echo","arguments":{"text":"resume"},"reason":"needs approval"}'
+                return "审批恢复完成"
 
             def stream_chat(self, messages, model=None):
                 for chunk in ["审批", "恢复", "完成"]:
@@ -113,6 +159,7 @@ class ChatAgentRuntimeTests(unittest.TestCase):
         self.assertEqual(resumed["tool_result"]["tool_name"], "medium.echo")
         self.assertEqual(resumed["answer"], "审批恢复完成")
         self.assertIn("approval-resolution", [entry["step"] for entry in resumed["ledger"]])
+        self.assertIn("plan-2", [entry["step"] for entry in resumed["ledger"]])
 
     def test_install_unpacked_skill_package(self):
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -138,6 +185,51 @@ class ChatAgentRuntimeTests(unittest.TestCase):
             self.assertEqual(installed.name, "demo-skill")
             self.assertTrue((root / "installed" / "demo-skill" / "SKILL.md").exists())
             self.assertEqual(registry.get_skill("demo-skill").description, "Demo installable skill")
+
+    def test_harness_runs_multi_step_loop_before_answering(self):
+        class MultiStepModelClient:
+            def __init__(self):
+                self.plan_calls = 0
+
+            def plan(self, messages, tools, model=None):
+                self.plan_calls += 1
+                if self.plan_calls == 1:
+                    return {
+                        "content": "先调用 echo 获取第一步结果",
+                        "tool_calls": [
+                            {
+                                "id": "call_echo_1",
+                                "type": "function",
+                                "name": "echo",
+                                "arguments": {"text": "step-one"},
+                                "raw_arguments": '{"text":"step-one"}',
+                            }
+                        ],
+                        "finish_reason": "tool_calls",
+                    }
+                return {
+                    "content": "已有观察结果，可以直接进入最终回答。",
+                    "tool_calls": [],
+                    "finish_reason": "stop",
+                }
+
+            def chat(self, messages, model=None):
+                return "多步循环完成"
+
+            def stream_chat(self, messages, model=None):
+                for chunk in ["多步", "循环", "完成"]:
+                    yield chunk
+
+        agent = HarnessChatAgent(model_client=MultiStepModelClient(), tool_registry=ToolRegistry())
+
+        result = agent.chat("请执行多步测试")
+
+        self.assertEqual(result["answer"], "多步循环完成")
+        self.assertEqual(result["tool_result"]["tool_name"], "echo")
+        ledger_steps = [entry["step"] for entry in result["ledger"]]
+        self.assertIn("plan-1", ledger_steps)
+        self.assertIn("plan-2", ledger_steps)
+        self.assertIn("tool-result-1", ledger_steps)
 
     def test_api_lists_agent_tools_and_skills(self):
         client = TestClient(app)
@@ -421,6 +513,46 @@ class ChatAgentRuntimeTests(unittest.TestCase):
             self.assertFalse(result.ok)
             self.assertIn("escapes skill directory", result.error)
 
+    def test_skill_registry_inferrs_preferred_tools_from_skill_markdown_without_manifest(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            skill_dir = root / "weather-skill"
+            skill_dir.mkdir()
+            (skill_dir / "SKILL.md").write_text(
+                "---\nname: weather\ndescription: Query weather from a public endpoint\n---\n"
+                "# Weather\n"
+                "Use curl -s \"https://wttr.in/Shanghai?format=3\" to query current weather.\n",
+                encoding="utf-8",
+            )
+
+            registry = SkillRegistry(builtin_dir=root, installed_dir=root / "installed")
+            skill = registry.get_skill("weather")
+
+            self.assertIsNotNone(skill)
+            self.assertIn("shell.exec", skill.contract.routing.preferred_tools)
+            self.assertIn("http.get", skill.contract.routing.preferred_tools)
+            self.assertTrue(skill.contract.routing.planner_hint)
+
+    def test_skill_registry_inferrs_skill_script_tools_from_scripts_directory_without_manifest(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            skill_dir = root / "plain-skill"
+            scripts_dir = skill_dir / "scripts"
+            scripts_dir.mkdir(parents=True)
+            (skill_dir / "SKILL.md").write_text(
+                "---\nname: plain-skill\ndescription: Plain skill with scripts\n---\n# Plain\n",
+                encoding="utf-8",
+            )
+            (scripts_dir / "demo.py").write_text("print('ok')\n", encoding="utf-8")
+
+            registry = SkillRegistry(builtin_dir=root, installed_dir=root / "installed")
+            skill = registry.get_skill("plain-skill")
+
+            self.assertIsNotNone(skill)
+            self.assertIn("skill.scripts.list", skill.contract.routing.preferred_tools)
+            self.assertIn("skill.python.run", skill.contract.routing.preferred_tools)
+            self.assertIn("contains Python scripts", skill.contract.routing.planner_hint)
+
     def test_api_stream_endpoint_returns_sse(self):
         client = TestClient(app)
         original_agent = chat_agent_service.agent
@@ -445,8 +577,33 @@ class ChatAgentRuntimeTests(unittest.TestCase):
 
     def test_api_approval_stream_resumes_from_pending_ticket(self):
         class MediumRiskModelClient:
+            def __init__(self):
+                self.plan_calls = 0
+
+            def plan(self, messages, tools, model=None):
+                self.plan_calls += 1
+                if self.plan_calls > 1:
+                    return {
+                        "content": "审批恢复后直接回答。",
+                        "tool_calls": [],
+                        "finish_reason": "stop",
+                    }
+                return {
+                    "content": "需要审批后调用 medium.echo",
+                    "tool_calls": [
+                        {
+                            "id": "call_medium_echo",
+                            "type": "function",
+                            "name": "medium.echo",
+                            "arguments": {"text": "resume"},
+                            "raw_arguments": '{"text":"resume"}',
+                        }
+                    ],
+                    "finish_reason": "tool_calls",
+                }
+ 
             def chat(self, messages, model=None):
-                return '{"action":"tool","tool_name":"medium.echo","arguments":{"text":"resume"},"reason":"needs approval"}'
+                return "审批接口恢复"
 
             def stream_chat(self, messages, model=None):
                 for chunk in ["审批", "接口", "恢复"]:

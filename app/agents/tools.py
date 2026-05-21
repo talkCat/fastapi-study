@@ -27,6 +27,14 @@ class ToolRegistry:
                 risk_level="low",
                 parallel_safe=True,
                 handler=self._echo,
+                input_schema={
+                    "type": "object",
+                    "properties": {
+                        "text": {"type": "string", "description": "Text to echo back."},
+                    },
+                    "required": ["text"],
+                    "additionalProperties": False,
+                },
             )
         )
         self.skill_runtime_adapter = skill_runtime_adapter or SkillRuntimeAdapter()
@@ -38,6 +46,14 @@ class ToolRegistry:
                 risk_level="low",
                 parallel_safe=True,
                 handler=self._skill_scripts_list,
+                input_schema={
+                    "type": "object",
+                    "properties": {
+                        "skill_name": {"type": "string", "description": "Normalized skill name."},
+                    },
+                    "required": ["skill_name"],
+                    "additionalProperties": False,
+                },
             )
         )
         self.register(
@@ -47,6 +63,27 @@ class ToolRegistry:
                 risk_level="medium",
                 parallel_safe=False,
                 handler=self._skill_python_run,
+                input_schema={
+                    "type": "object",
+                    "properties": {
+                        "skill_name": {"type": "string", "description": "Normalized skill name."},
+                        "script": {"type": "string", "description": "Relative Python script path inside the skill."},
+                        "args": {
+                            "type": "array",
+                            "description": "Command line arguments passed to the script.",
+                            "items": {"type": "string"},
+                        },
+                        "timeout_seconds": {"type": "integer", "description": "Maximum execution time in seconds."},
+                        "output_format": {
+                            "type": "string",
+                            "enum": ["text", "json"],
+                            "description": "How stdout should be decoded.",
+                        },
+                        "max_output_chars": {"type": "integer", "description": "Maximum stdout characters returned."},
+                    },
+                    "required": ["skill_name", "script"],
+                    "additionalProperties": False,
+                },
             )
         )
         self.register(
@@ -56,6 +93,16 @@ class ToolRegistry:
                 risk_level="low",
                 parallel_safe=False,
                 handler=self._web_fetch,
+                input_schema={
+                    "type": "object",
+                    "properties": {
+                        "url": {"type": "string", "description": "Public HTTP(S) URL to fetch."},
+                        "timeout_seconds": {"type": "integer", "description": "Maximum request time in seconds."},
+                        "max_chars": {"type": "integer", "description": "Maximum preview characters returned."},
+                    },
+                    "required": ["url"],
+                    "additionalProperties": False,
+                },
             )
         )
         self.register(
@@ -65,6 +112,24 @@ class ToolRegistry:
                 risk_level="low",
                 parallel_safe=False,
                 handler=self._web_search,
+                input_schema={
+                    "type": "object",
+                    "properties": {
+                        "query": {"type": "string", "description": "Search keywords."},
+                        "engines": {
+                            "type": "array",
+                            "description": "Search engines to try in order.",
+                            "items": {
+                                "type": "string",
+                                "enum": ["bing_cn", "bing_int", "duckduckgo", "baidu", "sogou"],
+                            },
+                        },
+                        "max_chars": {"type": "integer", "description": "Maximum preview characters per engine."},
+                        "timeout_seconds": {"type": "integer", "description": "Maximum request time in seconds."},
+                    },
+                    "required": ["query"],
+                    "additionalProperties": False,
+                },
             )
         )
         self._register_runtime_tools()
@@ -89,6 +154,19 @@ class ToolRegistry:
     def list_tools(self) -> list[ToolDefinition]:
         self.refresh_dynamic_tools()
         return sorted(self._tools.values(), key=lambda item: item.name)
+
+    def list_openai_tools(self) -> list[dict[str, Any]]:
+        return [
+            {
+                "type": "function",
+                "function": {
+                    "name": tool.name,
+                    "description": tool.description,
+                    "parameters": tool.input_schema,
+                },
+            }
+            for tool in self.list_tools()
+        ]
 
     def get(self, name: str) -> ToolDefinition | None:
         self.refresh_dynamic_tools()

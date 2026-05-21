@@ -88,6 +88,13 @@ class ToolDefinition:
     risk_level: Literal["low", "medium", "high"]
     parallel_safe: bool
     handler: Callable[[dict[str, Any]], dict[str, Any]]
+    input_schema: dict[str, Any] = field(
+        default_factory=lambda: {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": True,
+        }
+    )
 
 
 @dataclass
@@ -109,6 +116,7 @@ class ApprovalTicket:
     run_id: str
     step_id: str
     tool_call: ToolCall
+    loop_step_no: int = 1
     status: ApprovalStatus = "pending"
     requested_at: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     resolved_at: str | None = None
@@ -122,9 +130,13 @@ class ExecutionRun:
     message: str
     history_snapshot: list[dict[str, str]]
     selected_skill_names: list[str]
+    max_steps: int = 4
+    auto_approve_tools: bool = False
     ledger: list[LedgerEntry] = field(default_factory=list)
     status: RunStatus = "running"
     plan: dict[str, Any] = field(default_factory=dict)
+    completed_steps: list[dict[str, Any]] = field(default_factory=list)
+    current_loop_step: int = 1
     next_step_index: int = 1
     next_model_call_index: int = 1
     pending_approval_id: str | None = None

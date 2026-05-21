@@ -198,6 +198,7 @@ class SkillRuntimeAdapter:
                 timeout_seconds=timeout_seconds,
                 output_format=output_format,
             ),
+            input_schema=_argument_specs_to_schema(argument_specs),
         )
 
     def _resolve_skill_script(self, skill: SkillDescriptor, script: str) -> Path:
@@ -284,3 +285,51 @@ class SkillRuntimeAdapter:
 
 def _safe_tool_part(value: str) -> str:
     return value.strip().replace("_", "-").lower()
+
+
+def _argument_specs_to_schema(argument_specs: list[dict[str, Any]]) -> dict[str, Any]:
+    properties: dict[str, Any] = {}
+    required: list[str] = []
+    for spec in argument_specs:
+        name = str(spec.get("name") or "").strip()
+        if not name:
+            continue
+        schema: dict[str, Any] = {"type": _json_type_name(str(spec.get("type") or "string"))}
+        description = str(spec.get("description") or "").strip()
+        if description:
+            schema["description"] = description
+        enum = spec.get("enum")
+        if isinstance(enum, list) and enum:
+            schema["enum"] = enum
+        if schema["type"] == "array":
+            schema["items"] = {"type": _json_type_name(str(spec.get("items_type") or "string"))}
+        properties[name] = schema
+        if bool(spec.get("required", False)):
+            required.append(name)
+
+    result: dict[str, Any] = {
+        "type": "object",
+        "properties": properties,
+        "additionalProperties": False,
+    }
+    if required:
+        result["required"] = required
+    return result
+
+
+def _json_type_name(value: str) -> str:
+    normalized = value.strip().lower()
+    return {
+        "str": "string",
+        "string": "string",
+        "int": "integer",
+        "integer": "integer",
+        "float": "number",
+        "number": "number",
+        "bool": "boolean",
+        "boolean": "boolean",
+        "dict": "object",
+        "object": "object",
+        "list": "array",
+        "array": "array",
+    }.get(normalized, "string")

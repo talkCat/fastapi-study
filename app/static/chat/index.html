@@ -200,13 +200,25 @@
       white-space: nowrap;
     }
 
-    .flow-source.backend {
+    .flow-source.model {
+      background: #ede9fe;
+      color: #6d28d9;
+      border: 1px solid #ddd6fe;
+    }
+
+    .flow-source.system {
       background: #e8f1ff;
       color: #1d4ed8;
       border: 1px solid #cfe0ff;
     }
 
-    .flow-source.frontend {
+    .flow-source.tool {
+      background: #e6f7ef;
+      color: #0f766e;
+      border: 1px solid #c5eadb;
+    }
+
+    .flow-source.wait {
       background: #fff4db;
       color: #9a6700;
       border: 1px solid #f5ddb0;
@@ -905,14 +917,6 @@
       sendBtn.disabled = true;
       disableApprovalButtons();
       setStatus("streaming", true);
-      appendFlow(
-        assistantView,
-        "request",
-        "已发送请求，等待服务端开始流式返回。",
-        payloadPreview(text, options),
-        false,
-        "frontend"
-      );
       scheduleWaitNotice(assistantView, "服务端建立流式连接");
 
       const requestedSkills = skillNames.value
@@ -932,7 +936,7 @@
         await streamRequest("/api/v1/chat-agent/chat/stream", payload, assistantView);
       } catch (error) {
         clearWaitNotice();
-        appendFlow(assistantView, "stream error", error.message, {message: error.message}, true, "frontend");
+        appendFlow(assistantView, "执行失败", error.message, {message: error.message}, true, "system");
         assistantView.bubble.classList.add("error");
       } finally {
         clearWaitNotice();
@@ -951,11 +955,11 @@
       setStatus("approval", true);
       appendFlow(
         assistantView,
-        approved ? "审批" : "拒绝",
+        approved ? "提交审批" : "提交拒绝",
         approved ? "已提交审批通过，系统将从账本检查点继续执行。" : "已提交拒绝结果，系统将结束本轮执行。",
         {approval_id: approvalId, approved},
         false,
-        "frontend"
+        "system"
       );
       scheduleWaitNotice(assistantView, approved ? "审批恢复执行" : "写回拒绝结果");
 
@@ -967,7 +971,7 @@
         );
       } catch (error) {
         clearWaitNotice();
-        appendFlow(assistantView, "approval error", error.message, {message: error.message}, true, "frontend");
+        appendFlow(assistantView, "审批失败", error.message, {message: error.message}, true, "system");
         assistantView.bubble.classList.add("error");
       } finally {
         clearWaitNotice();
@@ -1053,11 +1057,11 @@
           assistantView.answerStarted = true;
           appendFlow(
             assistantView,
-            "回答生成",
-            "开始流式生成最终回答。",
+            "模型输出回答",
+            "模型开始流式生成最终回答。",
             {event: "answer_delta"},
             false,
-            "frontend"
+            "model"
           );
           setStatus("answering", true);
         }
@@ -1069,6 +1073,7 @@
 
       if (eventName === "model_request") {
         appendModelRequest(data);
+        appendReasoningFromModelRequest(assistantView, data);
         scheduleWaitNotice(assistantView, `等待模型返回：${data.stage || "unknown"}`);
         return;
       }
@@ -1080,6 +1085,7 @@
 
       if (eventName === "model_response") {
         appendModelResponse(data);
+        appendReasoningFromModelResponse(assistantView, data);
         return;
       }
 
@@ -1115,11 +1121,11 @@
         showApprovalAction(assistantView, "工具调用进入待审批状态。", data);
         appendFlow(
           assistantView,
-          "审批请求",
-          `${data.tool_name || "tool"} 等待审批票据 ${data.approval_id}`,
+          "等待审批",
+          `${data.tool_name || "tool"} 需要用户批准后才能继续执行。`,
           data,
           false,
-          "backend"
+          "system"
         );
         setStatus("pending approval", true);
         return;
@@ -1129,11 +1135,11 @@
         assistantView.pendingApproval = null;
         appendFlow(
           assistantView,
-          "审批结果",
+          "审批已处理",
           data.decision === "approved" ? "审批已通过，继续执行。": "审批已拒绝，本轮结束。",
           data,
           false,
-          "backend"
+          "system"
         );
         setStatus("approval resolved", true);
         return;
@@ -1141,7 +1147,25 @@
 
       if (eventName === "phase") {
         const name = data.name || "phase";
-        appendFlow(assistantView, `阶段：${name}`, data.detail || "服务端进入新的执行阶段。", data, false, "backend");
+        if (name === "planning") {
+          appendFlow(
+            assistantView,
+            planningTitle(data),
+            data.detail || "模型正在生成下一步行动计划。",
+            data,
+            false,
+            "model"
+          );
+        } else if (name === "answering") {
+          appendFlow(
+            assistantView,
+            "整理最终回答",
+            data.detail || "模型正在根据已有观察组织最终回答。",
+            data,
+            false,
+            "model"
+          );
+        }
         setStatus(name, true);
         return;
       }
@@ -1154,21 +1178,35 @@
 
       if (eventName === "plan") {
         const action = data.action || "unknown";
-        const tool = data.tool_name ? `，工具：${data.tool_name}` : "";
-        appendFlow(assistantView, "计划", `action=${action}${tool}。${data.reason || ""}`, data, false, "backend");
+        const summary = summarizePlanDecision(data);
+        appendFlow(assistantView, "系统确认计划", summary, data, false, "system");
         setStatus("planned", true);
         return;
       }
 
       if (eventName === "permission") {
         const decision = data.decision || "unknown";
-        appendFlow(assistantView, "权限裁决", `${data.tool_name || "tool"} => ${decision}`, data, decision === "deny", "backend");
+        appendFlow(
+          assistantView,
+          "权限检查",
+          summarizePermissionDecision(data),
+          data,
+          decision === "deny",
+          "system"
+        );
         setStatus(`permission: ${decision}`, true);
         return;
       }
 
       if (eventName === "tool_start") {
-        appendFlow(assistantView, "工具开始", `开始执行 ${data.tool_name || "tool"}`, data, false, "backend");
+        appendFlow(
+          assistantView,
+          "执行工具",
+          summarizeToolStart(data),
+          data,
+          false,
+          "tool"
+        );
         setStatus("tool running", true);
         return;
       }
@@ -1176,7 +1214,7 @@
       if (eventName === "tool_result") {
         const ok = data.ok === true;
         const summary = ok ? summarizeToolResult(data) : (data.error || "工具执行失败");
-        appendFlow(assistantView, "工具结果", summary, data, !ok, "backend");
+        appendFlow(assistantView, "工具观察", summary, data, !ok, "tool");
         setStatus(ok ? "tool done" : "tool failed", true);
         return;
       }
@@ -1184,11 +1222,11 @@
       if (eventName === "done") {
         appendFlow(
           assistantView,
-          "完成",
-          `本轮状态：${data.status || "unknown"}；技能：${(data.selected_skills || []).join(", ") || "无"}；是否需要审批：${data.needs_approval ? "是" : "否"}`,
+          "执行结束",
+          `本轮状态：${data.status || "unknown"}；技能：${(data.selected_skills || []).join(", ") || "无"}；审批：${data.needs_approval ? "待处理" : "已完成"}`,
           data,
           false,
-          "frontend"
+          "system"
         );
         if (data.pending_approval) {
           assistantView.pendingApproval = data.pending_approval;
@@ -1197,18 +1235,16 @@
         setStatus("done", false);
         return;
       }
-
-      appendFlow(assistantView, eventName, "收到服务端事件。", data, false, "backend");
     }
 
     function nextWaitingStage(eventName, data) {
       if (eventName === "ledger") {
         const step = data.step || "";
         if (step === "context") return "模型规划行动计划";
-        if (step === "plan") return "权限裁决";
+        if (step === "plan" || step.startsWith("plan-")) return "权限裁决";
         if (step.startsWith("permission")) return "工具调度";
-        if (step.startsWith("tool-")) return "工具执行";
         if (step.startsWith("tool-result")) return "生成最终回答";
+        if (step.startsWith("tool-")) return "工具执行";
         if (step === "answer") return "更新会话状态";
         return `等待下一步：${step || "ledger"}`;
       }
@@ -1236,7 +1272,7 @@
           `${waitingStage}已等待 1 秒，服务端仍在处理。`,
           {stage: waitingStage, elapsed_seconds: 1},
           false,
-          "frontend"
+          "wait"
         );
         waitInterval = window.setInterval(() => {
           if (!activeWaitRow) return;
@@ -1336,7 +1372,7 @@
       }
     }
 
-    function appendFlow(assistantView, title, summary, data, isError = false, source = "frontend") {
+    function appendFlow(assistantView, title, summary, data, isError = false, source = "system") {
       const row = document.createElement("div");
       row.className = `flow-row${isError ? " error" : ""}`;
 
@@ -1350,8 +1386,9 @@
       name.textContent = title;
 
       const sourceBadge = document.createElement("span");
-      sourceBadge.className = `flow-source ${source === "backend" ? "backend" : "frontend"}`;
-      sourceBadge.textContent = source === "backend" ? "后端事件" : "前端状态";
+      const sourceMeta = flowSourceMeta(source);
+      sourceBadge.className = `flow-source ${sourceMeta.className}`;
+      sourceBadge.textContent = sourceMeta.label;
 
       const time = document.createElement("span");
       time.className = "flow-time";
@@ -1368,7 +1405,7 @@
       if (data !== undefined) {
         const details = document.createElement("details");
         const detailsSummary = document.createElement("summary");
-        detailsSummary.textContent = "查看事件数据";
+        detailsSummary.textContent = "查看详细数据";
 
         const pre = document.createElement("pre");
         pre.textContent = JSON.stringify(data, null, 2);
@@ -1380,6 +1417,153 @@
       assistantView.flow.append(row);
       messages.scrollTop = messages.scrollHeight;
       return row;
+    }
+
+    function flowSourceMeta(source) {
+      if (source === "model") {
+        return {label: "模型", className: "model"};
+      }
+      if (source === "tool") {
+        return {label: "工具", className: "tool"};
+      }
+      if (source === "wait") {
+        return {label: "等待", className: "wait"};
+      }
+      return {label: "系统", className: "system"};
+    }
+
+    function planningTitle(data) {
+      const stepNo = data.loop_step || data.step_index;
+      return stepNo ? `模型规划第 ${stepNo} 步` : "模型规划";
+    }
+
+    function appendReasoningFromModelRequest(assistantView, data) {
+      if (data.stage === "planning") {
+        const toolCount = Array.isArray(data.tools) ? data.tools.length : 0;
+        appendFlow(
+          assistantView,
+          "模型读取上下文",
+          `模型开始查看本轮上下文和 ${toolCount} 个可用工具，准备决定下一步动作。`,
+          {
+            call_id: data.call_id,
+            stage: data.stage,
+            message_count: data.message_count,
+            tool_count: toolCount
+          },
+          false,
+          "model"
+        );
+        return;
+      }
+
+      if (data.stage === "answering") {
+        appendFlow(
+          assistantView,
+          "模型整理答案",
+          "模型开始基于已有工具观察生成最终回答。",
+          {
+            call_id: data.call_id,
+            stage: data.stage,
+            message_count: data.message_count
+          },
+          false,
+          "model"
+        );
+      }
+    }
+
+    function appendReasoningFromModelResponse(assistantView, data) {
+      if (data.stage === "planning") {
+        const toolCalls = Array.isArray(data.tool_calls) ? data.tool_calls : [];
+        if (toolCalls.length) {
+          appendFlow(
+            assistantView,
+            "模型选择工具",
+            summarizePlanningToolCalls(toolCalls, data.output_text),
+            {
+              call_id: data.call_id,
+              source: data.source,
+              tool_calls: toolCalls,
+              output_text: data.output_text
+            },
+            false,
+            "model"
+          );
+        } else {
+          appendFlow(
+            assistantView,
+            "模型停止调工具",
+            (data.output_text || "模型判断已有信息足够，可以直接回答。").trim(),
+            {
+              call_id: data.call_id,
+              source: data.source,
+              output_text: data.output_text
+            },
+            false,
+            "model"
+          );
+        }
+        return;
+      }
+
+      if (data.stage === "answering" && data.error) {
+        appendFlow(
+          assistantView,
+          "回答阶段降级",
+          `模型回答阶段发生异常，系统改用降级结果继续输出：${data.error}`,
+          data,
+          true,
+          "system"
+        );
+      }
+    }
+
+    function summarizePlanningToolCalls(toolCalls, reasonText) {
+      const first = toolCalls[0] || {};
+      const toolName = first.name || "unknown";
+      const argKeys = Object.keys(first.arguments || {});
+      const argumentHint = argKeys.length ? ` 参数：${argKeys.join(", ")}` : "";
+      const reason = (reasonText || "").trim();
+      return `${toolName}${argumentHint}${reason ? `。模型说明：${reason}` : ""}`;
+    }
+
+    function summarizePlanDecision(data) {
+      const action = data.action || "unknown";
+      if (action === "tool") {
+        return `本步计划调用 ${data.tool_name || "tool"}。${(data.reason || "").trim()}`;
+      }
+      return `本步不再继续调工具。${(data.reason || "").trim()}`;
+    }
+
+    function summarizePermissionDecision(data) {
+      const toolName = data.tool_name || "tool";
+      const decision = data.decision || "unknown";
+      if (decision === "allow") {
+        return `${toolName} 已通过权限检查，允许执行。`;
+      }
+      if (decision === "ask") {
+        return `${toolName} 风险较高，需要用户审批。`;
+      }
+      if (decision === "deny") {
+        return `${toolName} 被系统拒绝执行。`;
+      }
+      return `${toolName} 权限裁决结果：${decision}`;
+    }
+
+    function summarizeToolStart(data) {
+      const toolName = data.tool_name || "tool";
+      const argumentsText = summarizeArguments(data.arguments || {});
+      return argumentsText ? `${toolName} 开始执行。${argumentsText}` : `${toolName} 开始执行。`;
+    }
+
+    function summarizeArguments(argumentsObject) {
+      const entries = Object.entries(argumentsObject || {});
+      if (!entries.length) return "";
+      const preview = entries.slice(0, 3).map(([key, value]) => {
+        const text = typeof value === "string" ? value : JSON.stringify(value);
+        return `${key}=${String(text).slice(0, 80)}`;
+      }).join("；");
+      return `关键参数：${preview}`;
     }
 
     function summarizeToolResult(data) {
@@ -1396,6 +1580,9 @@
       }
       if (result.stdout) {
         return `工具成功，输出：${String(result.stdout).slice(0, 160)}`;
+      }
+      if (result.text) {
+        return `工具成功，返回文本：${String(result.text).slice(0, 160)}`;
       }
       return "工具成功。";
     }
@@ -1514,14 +1701,17 @@
 
       const callView = ensureModelCall(data);
       const count = data.message_count ?? (Array.isArray(data.messages) ? data.messages.length : 0);
-      callView.requestSummary.textContent = `共 ${count} 条消息；transport=${data.transport || "unknown"}；model=${data.model || "default"}`;
+      const toolCount = Array.isArray(data.tools) ? data.tools.length : 0;
+      callView.requestSummary.textContent = `共 ${count} 条消息；transport=${data.transport || "unknown"}；model=${data.model || "default"}；tools=${toolCount}`;
       callView.requestPre.textContent = JSON.stringify(data.messages || [], null, 2);
+      callView.requestToolsPre.textContent = JSON.stringify(data.tools || [], null, 2);
       callView.meta.textContent = `call_id: ${data.call_id || "unknown"} | run_id: ${data.run_id || "unknown"}`;
       callView.status.className = "ledger-status running";
       callView.status.textContent = "请求已发送";
       callView.responseSummary.textContent = "等待模型返回。";
       callView.responseStream.textContent = "";
       callView.responsePre.textContent = "";
+      callView.responseToolCallsPre.textContent = "";
     }
 
     function appendModelDelta(data) {
@@ -1536,13 +1726,15 @@
       const callView = ensureModelCall(data);
       const source = data.source || "model";
       const hasError = Boolean(data.error);
+      const toolCallCount = Array.isArray(data.tool_calls) ? data.tool_calls.length : 0;
       callView.status.className = `ledger-status ${hasError ? "failed" : "completed"}`;
       callView.status.textContent = hasError ? `完成（${source}，有降级）` : `完成（${source}）`;
       callView.responseSummary.textContent = hasError
-        ? `模型阶段结束：${source}；error=${data.error}`
-        : `模型阶段结束：${source}`;
+        ? `模型阶段结束：${source}；tool_calls=${toolCallCount}；error=${data.error}`
+        : `模型阶段结束：${source}；tool_calls=${toolCallCount}`;
       callView.responseStream.textContent = data.output_text || "";
       callView.responsePre.textContent = JSON.stringify(data, null, 2);
+      callView.responseToolCallsPre.textContent = JSON.stringify(data.tool_calls || [], null, 2);
     }
 
     function ensureModelCall(data) {
@@ -1595,7 +1787,12 @@
       requestDetailsSummary.textContent = "查看 messages";
       const requestPre = document.createElement("pre");
       requestDetails.append(requestDetailsSummary, requestPre);
-      requestBlock.append(requestHead, requestDetails);
+      const requestToolsDetails = document.createElement("details");
+      const requestToolsSummary = document.createElement("summary");
+      requestToolsSummary.textContent = "查看 planning tools schema";
+      const requestToolsPre = document.createElement("pre");
+      requestToolsDetails.append(requestToolsSummary, requestToolsPre);
+      requestBlock.append(requestHead, requestDetails, requestToolsDetails);
 
       const responseBlock = document.createElement("div");
       responseBlock.className = "model-block";
@@ -1615,7 +1812,12 @@
       responseDetailsSummary.textContent = "查看返回细节";
       const responsePre = document.createElement("pre");
       responseDetails.append(responseDetailsSummary, responsePre);
-      responseBlock.append(responseHead, responseStream, responseDetails);
+      const responseToolCallsDetails = document.createElement("details");
+      const responseToolCallsSummary = document.createElement("summary");
+      responseToolCallsSummary.textContent = "查看 tool_calls";
+      const responseToolCallsPre = document.createElement("pre");
+      responseToolCallsDetails.append(responseToolCallsSummary, responseToolCallsPre);
+      responseBlock.append(responseHead, responseStream, responseToolCallsDetails, responseDetails);
 
       body.append(requestBlock, responseBlock);
       container.append(head, body);
@@ -1627,9 +1829,11 @@
         status,
         requestSummary,
         requestPre,
+        requestToolsPre,
         responseSummary,
         responseStream,
-        responsePre
+        responsePre,
+        responseToolCallsPre
       };
       modelCallViews.set(callId, view);
       return view;
