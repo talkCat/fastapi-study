@@ -253,6 +253,8 @@ database (数据库)    - 数据持久化
 |------|------|------|
 | POST | /api/v1/chat-agent/chat | 与聊天智能体交互，支持技能选择、工具调用和执行账本 |
 | POST | /api/v1/chat-agent/chat/stream | 流式聊天接口，使用 `text/event-stream` 返回 Harness 事件和回答分片 |
+| POST | /api/v1/chat-agent/approvals | 一次性提交工具或 Subagent 审批结果，并返回恢复后的最终结果 |
+| POST | /api/v1/chat-agent/approvals/stream | 流式提交审批结果，使用 SSE 返回恢复执行后的 ledger、工具结果和回答分片 |
 | GET | /api/v1/chat-agent/skills | 查看当前可用技能 |
 | POST | /api/v1/chat-agent/skills/install | 安装已解压的技能包目录，目录内必须包含 `SKILL.md` |
 | GET | /api/v1/chat-agent/tools | 查看当前受管工具 |
@@ -261,11 +263,13 @@ database (数据库)    - 数据持久化
 
 - Query Loop / Harness：`app/agents/harness.py`
 - 模型客户端：`app/agents/model_client.py`
+- Subagent 任务、策略和 worker：`app/agents/subagents.py`
 - Skill 注册和安装：`app/agents/skills.py`
 - Skill Runtime Adapter：`app/agents/skill_runtime.py`
 - Tool 注册和权限：`app/agents/tools.py`
 - Service：`app/services/chat_agent.py`
 - Router：`app/api/routers/chat_agent.py`
+- Subagent 设计说明：`docs/harness_subagent_design.md`
 
 第一版支持：
 
@@ -278,7 +282,11 @@ database (数据库)    - 数据持久化
 - 调用独立 Tool 目录中的天气工具 `.agents/tools/weather/`
 - 调用独立 Tool 目录中的 DOCX 工具 `.agents/tools/docx/`
 - 返回 `ledger`，展示上下文治理、计划、权限裁决、工具执行和回答阶段
-- 流式接口按 SSE 事件返回：`ledger`、`plan`、`permission`、`tool_start`、`tool_result`、`answer_delta`、`done`
+- 流式接口按 SSE 事件返回：`ledger`、`model_request`、`model_response`、`plan`、`permission`、`tool_start`、`tool_result`、`approval_required`、`approval_resolved`、`answer_delta`、`done`
+- Planner 计划会被归一化成 `answer`、`tool`、`delegate`、`delegate_batch` 四类 action：自然语言规划输出会变成 `answer`，OpenAI tool call 会变成 `tool`，合法 JSON delegate 计划会变成 Subagent 委派
+- 明确仓库路径的只读调查会走 pre-plan route，例如 `帮我检查 app/agents/harness.py` 会直接委派 `research`，不先消耗完整 planner 上下文
+- 支持教学版 Subagent 能力：coordinator 可委派 `research`、`verification`、受审批保护的 `implementation` worker，也支持只读 `research` 批量并行委派，并返回 `delegate`、`delegate_batch`、`subagent_start`、`subagent_result`、`verification`、`synthesis` 事件
+- `implementation` Subagent 和 medium 风险工具会进入审批检查点；页面使用 `/api/v1/chat-agent/approvals/stream` 从 `approval_id` 恢复执行
 
 当前内置 Tool：
 
@@ -297,6 +305,13 @@ database (数据库)    - 数据持久化
 | skill.weather.build-open-meteo-query | low | 由 weather Skill manifest 自动适配的 Open-Meteo URL 构造工具 |
 
 `medium` 风险工具默认需要审批；如果明确允许自动执行，可以在请求里传 `auto_approve_tools=true`，或在聊天页面勾选“自动批准工具”。
+
+审批恢复当前是教学版内存实现：
+
+- `ExecutionRun` 保存在 `HarnessChatAgent._runs`
+- `ApprovalTicket` 保存在 `HarnessChatAgent._pending_approvals`
+- 服务重启或多进程部署时，未完成的 `approval_id` 会丢失
+- 生产化时应把 run checkpoint 和 approval ticket 持久化到数据库或 Redis
 
 ## Make 命令
 

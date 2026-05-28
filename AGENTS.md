@@ -67,6 +67,7 @@ Main references:
 - `notebooks/harness-engineering/README.md`
 - `notebooks/harness-engineering/001-claude-code-harness-engineering.ipynb`
 - `notebooks/harness-engineering/002-streaming-chat-agent-flow.ipynb`
+- `docs/harness_subagent_design.md`
 - `docs/skills_vs_tools_guide.md`
 
 This track teaches:
@@ -110,6 +111,7 @@ Implemented app agent runtime:
 
 - `app/agents/harness.py`
 - `app/agents/model_client.py`
+- `app/agents/subagents.py`
 - `app/agents/skill_runtime.py`
 - `app/agents/skills.py`
 - `app/agents/tools.py`
@@ -128,6 +130,10 @@ This runtime follows the Harness Engineering teaching track:
 7. `word-docx` Skill is paired with managed DOCX Tools: `docx.inspect`, `docx.extract_text`, `docx.create`, `docx.replace_text`
 8. Skill packages can expose scripts as tools through `agents/tools.json`, adapted by `app/agents/skill_runtime.py`
 9. Skills without `agents/tools.json` can still use generic tools: `skill.scripts.list` and `skill.python.run`; the runner is medium risk and requires approval
+10. Teaching-version Subagent support exists: `HarnessChatAgent` remains the coordinator and can delegate `research`, `verification`, approval-gated `implementation`, and limited parallel read-only `research` batches, then record `delegate`, `delegate_batch`, `subagent_start`, `subagent_result`, `verification`, and `synthesis` events before continuing the loop
+11. Planner output is normalized into `answer`, `tool`, `delegate`, or `delegate_batch`; plain natural-language planner output becomes `answer`, OpenAI tool calls become `tool`, and delegate plans are parsed from JSON
+12. Pre-plan routing now handles explicit repo-path research requests without first spending full planner context; after a research subagent returns evidence, the coordinator can route directly to final answer synthesis
+13. Approval uses in-memory checkpoints: `ExecutionRun` is kept in `_runs`, pending `ApprovalTicket` objects are kept in `_pending_approvals`, and `/api/v1/chat-agent/approvals/stream` resumes execution through `stream_resume_approval`
 
 This track now contains a complete 10-lesson weather-skill line that teaches:
 
@@ -268,9 +274,10 @@ If the request is about agent practice notebooks:
 If the request is about Harness Engineering, Claude Code interaction patterns, or coding-agent reliability:
 
 1. inspect `notebooks/harness-engineering/`
-2. keep the teaching focus on engineering controls rather than model cleverness
-3. explain reliability through Prompt control plane, Query Loop, Tool permissions, Context budget, Recovery, independent verification, and team policy
-4. avoid claiming exact Claude Code source behavior unless source files are actually present or cited
+2. inspect `docs/harness_subagent_design.md` for the current teaching-version subagent design
+3. keep the teaching focus on engineering controls rather than model cleverness
+4. explain reliability through Prompt control plane, Query Loop, Tool permissions, Context budget, Recovery, independent verification, and team policy
+5. avoid claiming exact Claude Code source behavior unless source files are actually present or cited
 
 If the request is about the implemented chat agent runtime:
 
@@ -280,6 +287,9 @@ If the request is about the implemented chat agent runtime:
 4. use fake `ModelClient` implementations in tests to avoid live LLM calls
 5. for downloaded Skill packages, prefer `agents/tools.json` manifest adaptation when available
 6. for Skill Hub packages without manifests, use `skill.scripts.list` before `skill.python.run`; do not bypass permission checks
+7. preserve the coordinator/subagent boundary: subagents receive `SubAgentTask` slices, not the full planner request messages
+8. keep explicit repo-path read-only investigation on the pre-plan route unless there is a stronger reason to spend planner context
+9. remember that approval checkpoints are currently in memory only; a production version would need database or Redis persistence before multi-process or restart-safe deployment
 
 If the request is about Skills / Codex / OpenClaw-style workflow:
 

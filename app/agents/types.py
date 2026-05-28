@@ -11,6 +11,8 @@ PermissionDecision = Literal["allow", "deny", "ask"]
 class AgentState(str, Enum):
     READY = "ready"
     PLANNING = "planning"
+    SUBAGENT_RUNNING = "subagent_running"
+    SYNTHESIZING = "synthesizing"
     TOOL_PERMISSION = "tool_permission"
     PENDING_APPROVAL = "pending_approval"
     TOOL_RUNNING = "tool_running"

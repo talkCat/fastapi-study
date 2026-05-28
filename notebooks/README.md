@@ -33,6 +33,10 @@
 - `harness-engineering/001-claude-code-harness-engineering.ipynb`
 - `harness-engineering/002-streaming-chat-agent-flow.ipynb`
 
+如果开始学习 LangChain，可以单独分目录：
+
+- `langchain/001-langchain-overview-and-agent.ipynb`
+
 这样做的好处是：
 
 1. 文件顺序清晰
@@ -233,3 +237,104 @@ Prompt 决定模型怎么说话，Harness 决定模型怎么做事。
 这一组 Notebook 不依赖 OpenAI API，适合在理解 `codex/001`、`skills_vs_tools_guide.md` 和 `agent-practice/001` 之后学习。
 
 第二份 `002-streaming-chat-agent-flow.ipynb` 会结合当前项目真实实现，解释 `/chat` 页面、`/api/v1/chat-agent/chat/stream`、`HarnessChatAgent.stream_chat(...)`、Skill 选择、Tool 权限裁决、模型规划和 SSE 事件返回的完整流程。
+
+---
+
+## 9. LangChain 学习 Notebook
+
+如果你想学习 LangChain Python v1，可以看：
+
+- `langchain/README.md`
+- `langchain/001-langchain-overview-and-agent.ipynb`
+- `langchain/002-models-and-messages.ipynb`
+- `langchain/003-tools-and-tool-calling.ipynb`
+- `langchain/004-structured-output.ipynb`
+- `langchain/005-agents-and-control-flow.ipynb`
+- `langchain/006-langchain-in-fastapi.ipynb`
+- `langchain/007-built-in-middleware.ipynb`
+- `langchain/008-built-in-middleware-recipes.ipynb`
+- `langchain/009-custom-middleware.ipynb`
+
+这一组 Notebook 会按照官方文档从 `create_agent`、model、tools、messages 开始，而不是一上来直接堆复杂工作流。
+
+第一份 Notebook 会做五件事：
+
+1. 建立 LangChain 的核心心智模型
+2. 安装 `langchain` 和 `langchain-openai`
+3. 复用项目 `.env` 创建 `ChatOpenAI`
+4. 用 `create_agent` 和一个本地 tool 跑通最小 agent
+5. 对比 LangChain agent 和本仓库 `HarnessChatAgent` 的职责边界
+
+第二份 Notebook 会做五件事：
+
+1. 认识 LangChain 的 message 类型
+2. 看懂 `system` / `user` / `assistant` / `tool` 的上下文表达
+3. 了解模型调用前 messages 如何组织
+4. 对比本仓库 `history_snapshot` 和 `completed_steps`
+5. 为后续 tools 和 structured output 打好基础
+
+第三份 Notebook 会做五件事：
+
+1. 用 `@tool` 定义 LangChain tool
+2. 查看 name、description 和 args schema
+3. 用 Pydantic 明确工具参数
+4. 对比 LangChain tool 和本仓库 `ToolDefinition`
+5. 解释为什么 tool calling 仍然需要权限、审批和恢复机制
+
+第四份 Notebook 会做五件事：
+
+1. 解释 prompt-only JSON 为什么脆弱
+2. 用 Pydantic 定义 planner decision schema
+3. 本地验证结构化数据
+4. 学习 LangChain `response_format`
+5. 对比 structured output 和本仓库 planner action
+
+第五份 Notebook 会做五件事：
+
+1. 理解 LangChain agent 是循环，不是一次模型调用
+2. 用普通 Python 模拟 ReAct 控制流
+3. 创建一个可选运行的 LangChain agent
+4. 对比 LangChain agent 和本仓库 Harness Query Loop
+5. 判断哪些控制面仍然要留在应用层
+
+第六份 Notebook 会做五件事：
+
+1. 设计 LangChain 接入 FastAPI 的分层方式
+2. 区分 `invoke`、`ainvoke`、`stream`、`astream`
+3. 写一个最小 Service 封装
+4. 讨论如何适配 SSE 和现有页面
+5. 明确不要直接绕过 Harness 权限审批边界
+
+第七份 Notebook 会做五件事：
+
+1. 学习 LangChain built-in middleware
+2. 对比 middleware 和 Java Filter / Interceptor
+3. 认识 context、HITL、limit、retry、fallback、PII、tool selection、filesystem、shell 等控制面
+4. 映射到本仓库 Harness 的 ledger、approval、permission、context compact、recovery
+5. 判断哪些 middleware 可以复用，哪些必须保留业务兜底
+
+第八份 Notebook 会做五件事：
+
+1. 逐个查看 built-in middleware 的最小用法
+2. 用 `FakeListChatModel` 避免真实模型调用
+3. 区分本地 LangChain 可运行类和 Deep Agents 扩展类
+4. 接入当前 `.env` 真实模型配置，运行一个低风险 middleware agent demo
+5. 对比 Filesystem、Shell、SubAgent 等能力和本仓库 approval / allowed_paths 的关系
+6. 给出直接接入、业务兜底和暂不接入的判断口径
+
+第九份 Notebook 会做五件事：
+
+1. 学习 custom middleware 的 decorator 写法和 class 写法
+2. 理解 node-style hook 和 wrap-style hook 的差异
+3. 用 fake model 跑通模型调用拦截、工具调用拦截和自定义 state
+4. 学习 `can_jump_to` / `jump_to` 如何提前结束 agent
+5. 映射到本仓库 Harness 的 ledger、approval、context compact、recovery
+
+推荐学习顺序：
+
+```text
+openai/001-005
+  -> agent-practice/001
+  -> harness-engineering/001-002
+  -> langchain/001-009
+```
