@@ -36,6 +36,8 @@
 如果开始学习 LangChain，可以单独分目录：
 
 - `langchain/001-langchain-overview-and-agent.ipynb`
+- `langchain-Advanced usage/001-guardrails.ipynb`
+- `langchain-multi-agent/001-overview.ipynb`
 
 这样做的好处是：
 
@@ -337,4 +339,124 @@ openai/001-005
   -> agent-practice/001
   -> harness-engineering/001-002
   -> langchain/001-009
+  -> langchain-Advanced usage/001-004
+  -> langchain-multi-agent/001-006
 ```
+
+---
+
+## 10. LangChain Advanced Usage 学习 Notebook
+
+如果你想学习更接近生产系统的 LangChain 高级能力，可以看：
+
+- `langchain-Advanced usage/README.md`
+- `langchain-Advanced usage/001-guardrails.ipynb`
+- `langchain-Advanced usage/002-runtime.ipynb`
+- `langchain-Advanced usage/003-context-engineering.ipynb`
+- `langchain-Advanced usage/004-human-in-the-loop.ipynb`
+
+这一组 Notebook 会放在基础 LangChain 学习之后，重点不再是“API 怎么调”，而是“系统边界怎么设计”。
+
+第一份 Advanced usage Notebook 会做五件事：
+
+1. 理解 guardrails 是 agent 的运行时安全边界
+2. 学习 `PIIMiddleware` 和 `HumanInTheLoopMiddleware`
+3. 学习输入 guardrail、输出 guardrail、工具 guardrail
+4. 用 fake model 跑通安全拦截，不执行危险工具
+5. 对比本仓库 Harness 的 approval、allowed_paths、ledger、verification
+
+第二份 Advanced usage Notebook 会做五件事：
+
+1. 理解 Runtime 是 agent 执行时的运行时对象
+2. 区分 `messages`、`state`、`context`、`store`
+3. 学会在 tool 中读取 `ToolRuntime.context`
+4. 学会用 `ToolRuntime.store` 和 `ToolRuntime.stream_writer`
+5. 接入当前 `.env` 的真实模型配置运行 Runtime 示例
+6. 对比本仓库 Harness 的 session、ledger、memory、SSE 事件
+
+第三份 Advanced usage Notebook 会做五件事：
+
+1. 理解 context engineering 不是“把所有东西塞进 prompt”
+2. 区分 model context、tool context、life-cycle context
+3. 学习动态 prompt、临时上下文注入和工具可见性裁剪
+4. 用 `ToolRuntime.store` 演示长期上下文
+5. 对比本仓库 Harness 的 context budget、ledger、subagent synthesis
+
+第四份 Advanced usage Notebook 会做五件事：
+
+1. 理解 human-in-the-loop 是高风险工具审批机制
+2. 学会使用 `HumanInTheLoopMiddleware`
+3. 理解 checkpointer 和 `thread_id` 为什么是恢复任务的关键
+4. 跑通 approve / reject / edit 三种审批决策
+5. 对比本仓库 Harness 的 `approval_required` 和 `stream_resume_approval`
+
+---
+
+## 11. LangChain Multi-agent 学习 Notebook
+
+如果你想学习 LangChain 多智能体设计，可以看：
+
+- `langchain-multi-agent/README.md`
+- `langchain-multi-agent/001-overview.ipynb`
+- `langchain-multi-agent/002-subagents-handoffs.ipynb`
+- `langchain-multi-agent/003-handoffs.ipynb`
+- `langchain-multi-agent/004-skills.ipynb`
+- `langchain-multi-agent/005-router.ipynb`
+- `langchain-multi-agent/006-custom-workflow.ipynb`
+
+这一组 Notebook 按当前学习节奏推进：
+
+1. Overview
+2. SubagentsHandoffs
+3. Handoffs
+4. Skills
+5. Router
+6. Custom workflow
+
+第一份 Multi-agent Notebook 会做五件事：
+
+1. 理解 multi-agent 解决的是上下文、职责和控制流问题
+2. 认识 Subagents、Handoffs、Skills、Router、Custom workflow 五种模式
+3. 判断什么时候不需要多智能体
+4. 用控制权、上下文隔离、成本和验证来选择模式
+5. 对比本仓库 Harness 多智能体设计里的 coordinator、subagent、verification
+
+第二份 Multi-agent Notebook 会做五件事：
+
+1. 理解 supervisor 通过 tools 调用 subagent
+2. 跑通 tool-per-agent 的最小实现
+3. 理解 subagent 默认无状态和上下文隔离
+4. 学习 single dispatch tool 和 enum constraint
+5. 对比 subagent 和 handoff 的控制权差异
+
+第三份 Multi-agent Notebook 会做五件事：
+
+1. 理解 handoff 是 active agent / active step 的控制权转移
+2. 区分 handoff 和 subagent-as-tool
+3. 学会用 state 记录当前 step
+4. 学会用 `Command(update=...)` 触发 handoff
+5. 学会用 middleware 根据当前 step 动态切换 prompt 和 tools
+
+第四份 Multi-agent Notebook 会做五件事：
+
+1. 理解 Skill 是按需加载的专业能力包，不只是 prompt 模板
+2. 区分 Skill、Tool、Subagent、Handoff 的边界
+3. 学会用 registry 表达 Skill 元数据和触发条件
+4. 学会用 middleware 根据用户意图加载 Skill 指令和工具
+5. 对比本仓库 `.agents/skills` 的真实 Skill 目录设计
+
+第五份 Multi-agent Notebook 会做五件事：
+
+1. 理解 router 是分类和分发步骤，不是持续编排器
+2. 区分 deterministic routing 和 model routing
+3. 学会用 `Command(goto=...)` 表达单目标路由
+4. 学会用 `Send(...)` 表达多目标 fan-out
+5. 对比本仓库 Harness 的 planner action 路由
+
+第六份 Multi-agent Notebook 会做五件事：
+
+1. 理解 custom workflow 是显式控制流，不是自由 agent 循环
+2. 学会用 LangGraph `StateGraph` 定义稳定流程
+3. 学会把 research、implementation、verification、synthesis 分成节点
+4. 学会用条件边决定是否进入工程工作流
+5. 对比本仓库 Harness Query Loop 和 LangGraph workflow
