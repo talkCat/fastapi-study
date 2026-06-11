@@ -38,6 +38,11 @@
 - `langchain/001-langchain-overview-and-agent.ipynb`
 - `langchain-Advanced usage/001-guardrails.ipynb`
 - `langchain-multi-agent/001-overview.ipynb`
+- `langgraph/001-overview.ipynb`
+
+如果开始学习 RAG / GraphRAG 问答知识库，可以单独分目录：
+
+- `rag/001-rag-architecture-overview.ipynb`
 
 这样做的好处是：
 
@@ -341,6 +346,7 @@ openai/001-005
   -> langchain/001-009
   -> langchain-Advanced usage/001-004
   -> langchain-multi-agent/001-006
+  -> langgraph/001
 ```
 
 ---
@@ -460,3 +466,127 @@ openai/001-005
 3. 学会把 research、implementation、verification、synthesis 分成节点
 4. 学会用条件边决定是否进入工程工作流
 5. 对比本仓库 Harness Query Loop 和 LangGraph workflow
+
+---
+
+## 12. LangGraph 学习 Notebook
+
+如果你想学习 LangGraph，可以看：
+
+- `langgraph/README.md`
+- `langgraph/001-overview.ipynb`
+- `langgraph/002-quickstart.ipynb`
+- `langgraph/003-thinking-in-langgraph.ipynb`
+- `langgraph/004-workflows-agents.ipynb`
+- `langgraph/005-persistence.ipynb`
+- `langgraph/006-fault-tolerance.ipynb`
+- `langgraph/007-event-streaming.ipynb`
+- `langgraph/008-streaming.ipynb`
+- `langgraph/009-interrupts.ipynb`
+- `langgraph/010-time-travel.ipynb`
+- `langgraph/011-memory.ipynb`
+- `langgraph/012-subgraphs.ipynb`
+
+这一组 Notebook 会从图结构本身开始，而不是一上来写复杂 agent。
+
+第一份 LangGraph Notebook 会做五件事：
+
+1. 理解 LangGraph 是低层 orchestration runtime
+2. 区分 state、node、edge、graph、compiled graph
+3. 跑通 `StateGraph(MessagesState)` 最小示例
+4. 跑通自定义 `TypedDict` state 示例
+5. 对比 LangGraph workflow、本仓库 Harness Query Loop、LangChain agent
+
+第二份 LangGraph Notebook 会做五件事：
+
+1. 跑通一个最小 calculator agent graph
+2. 理解 tools、model node、tool node、conditional edge 的关系
+3. 理解 `Annotated[list[AnyMessage], operator.add]` 为什么能追加消息
+4. 学会用 `should_continue` 控制 agent loop 是否继续
+5. 对比 Quickstart 的真实模型版本和本课 fake model 版本
+
+第三份 LangGraph Notebook 会做五件事：
+
+1. 理解 Thinking in LangGraph 是设计方法，不只是 API 教程
+2. 学会把业务流程拆成 node
+3. 学会区分 LLM node、data node、action node、human input node
+4. 学会设计只保存原始数据和关键决策的 state
+5. 用 `Command(update=..., goto=...)` 跑通一个客服邮件 workflow
+
+第四份 LangGraph Notebook 会做五件事：
+
+1. 区分 workflow 和 agent 的控制权差异
+2. 理解 prompt chaining、routing、parallelization、orchestrator-worker、evaluator-optimizer 等 workflow 模式
+3. 跑通一个 evaluator-optimizer workflow
+4. 跑通一个动态选择工具的 agent loop
+5. 判断什么时候应该用 workflow，什么时候应该用 agent
+
+第五份 LangGraph Notebook 会做五件事：
+
+1. 理解 persistence 为什么是 LangGraph 的核心能力
+2. 理解 thread、checkpoint、state snapshot 的关系
+3. 学会用 `InMemorySaver` 保存 graph 执行状态
+4. 学会使用 `get_state`、`get_state_history`、`update_state`
+5. 对比 LangGraph checkpoint 和本仓库 Harness approval run state
+
+第六份 LangGraph Notebook 会做五件事：
+
+1. 理解 fault tolerance 为什么是长运行 agent 的核心能力
+2. 学会用 `RetryPolicy` 处理临时错误
+3. 学会用 checkpoint 在节点失败后查看状态
+4. 学会从失败节点继续执行 graph
+5. 理解重试和外部副作用之间的幂等性风险
+
+第七份 LangGraph Notebook 会做六件事：
+
+1. 理解 event streaming 为什么是 agent UI 和服务端观察性的核心能力
+2. 学会使用 `.stream(..., stream_mode="updates")`
+3. 学会使用 `.stream(..., stream_mode="values")`
+4. 学会使用 `.stream(..., stream_mode="debug")`
+5. 了解 `astream_events(...)` 的事件结构，并对比本仓库 Harness SSE
+6. 理解官方新版 `stream_events(..., version="v3")` 的 typed projections 设计
+
+第八份 LangGraph Notebook 会做六件事：
+
+1. 区分 event streaming 和 stream-mode API
+2. 理解 `version="v2"` 的统一 `StreamPart` 格式
+3. 学会同时消费 `updates`、`values`、`custom` 等 stream modes
+4. 用 fake chat model 跑通 `messages` token streaming
+5. 理解 `tasks`、`checkpoints`、`debug` 适合什么场景
+6. 判断哪些内部事件适合转换成前端 SSE 业务事件
+
+第九份 LangGraph Notebook 会做六件事：
+
+1. 理解 `interrupt()` 为什么必须配合 checkpointer 和 `thread_id`
+2. 学会从 `__interrupt__` 中读取暂停请求
+3. 学会用 `Command(resume=...)` 恢复同一个 graph thread
+4. 跑通审批、拒绝、人工编辑、输入校验四种 human-in-the-loop 模式
+5. 理解节点恢复时会从节点开头重新执行的副作用风险
+6. 学会把 interrupt 映射成 Harness 风格审批事件
+
+第十份 LangGraph Notebook 会做六件事：
+
+1. 理解 time travel 依赖 checkpoint history
+2. 学会用 `get_state_history(...)` 找到历史 checkpoint
+3. 学会用 `invoke(None, checkpoint.config)` replay 后续节点
+4. 学会用 `update_state(...)` 从旧 checkpoint fork 新分支
+5. 理解 replay 会重新触发 LLM、API、interrupt 等后续节点副作用
+6. 对比 time travel 和本仓库 Harness ledger / approval resume
+
+第十一份 LangGraph Notebook 会做六件事：
+
+1. 区分 short-term memory 和 long-term memory
+2. 学会用 checkpointer 保存同一个 `thread_id` 的短期对话状态
+3. 学会用 store 保存跨 thread 的长期用户记忆
+4. 理解 `thread_id` 和 `user_id` 的区别
+5. 理解长对话为什么需要 trim / delete / summarize
+6. 对比 LangGraph memory 和本仓库 Harness 上下文/记忆设计
+
+第十二份 LangGraph Notebook 会做六件事：
+
+1. 理解 subgraph 是把一个 graph 当作另一个 graph 的节点
+2. 学会在父子 state schema 不同时用 wrapper node 调用子图
+3. 学会在父子共享 state key 时把 compiled subgraph 直接 add_node
+4. 学会用 `subgraphs=True` 观察子图 stream namespace
+5. 理解子图 checkpointer 的 per-invocation / per-thread / stateless 模式
+6. 跑通子图里的 interrupt 和状态查看
