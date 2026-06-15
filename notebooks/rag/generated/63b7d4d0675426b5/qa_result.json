@@ -1,0 +1,57 @@
+{
+  "question": "密引水渠引水流量不能满足泄洪要求应该怎么处理？",
+  "answer": "根据提供的证据，关于“密引水渠引水流量不能满足泄洪要求”的处理方式，证据中并未直接给出针对该特定情况的独立处理措施，但提供了相关的调度原则和超标准洪水下的应急方案。以下是基于证据的要点：\n\n1. **常规控泄流量包含引水流量**：在正常调度规程中，水库的控泄流量是包含京密引水渠引水流量的。例如，当水库水位在152.00m至154.32m之间时，控泄流量为600m³/s，其中已包含京密引水渠引水流量50m³/s [T2]。\n2. **高水位时全开闸门不控泄**：当水库水位超过157.50m时，输、泄水建筑物闸门全部开启，不再进行控泄，此时引水流量对泄洪能力的限制不再适用 [T2]。\n3. **超标准洪水下的极端措施**：若发生超标准洪水，且敞开各输、泄水建筑物泄洪仍不能满足工程安全要求时，经北京市水务局批准后，可选择炸开副坝的形式进行泄洪 [T1]。\n4. **利用预报调度预泄**：通过实施预报调度，根据洪水预报结果提前预泄，以降低库水位，从而为后续泄洪腾出库容。例如在预报调度模式下，最大下泄流量可达3000m³/s或4000m³/s，远高于常规调度 [T1]。\n5. **证据中未明确具体替代方案**：虽然图谱证据[G1]提到了“京密引水渠引水流量不能满足泄洪要求”这一情境，但并未提供具体的处理步骤或替代调度方案，仅作为背景信息存在 [G1]。\n\n证据覆盖范围：文本证据（[T1]-[T6]）提供了密云水库的调度规程、超标准洪水预案及具体水位流量关系；图谱证据（[G1]-[G6]）主要提供了洪水调度示例数据及京密引水渠与调节池的调度关系，但未提供针对引水流量不足的具体处理措施。",
+  "answer_source": "model",
+  "validation": {
+    "not_empty": true,
+    "has_citation_or_insufficient": true,
+    "all_citations_known": true,
+    "citation_count": 10,
+    "unknown_citations": [],
+    "passed": true
+  },
+  "used_citations": [
+    {
+      "citation_id": "G1",
+      "type": "graph",
+      "subject": "调节池",
+      "predicate": "调度",
+      "object": "京密引水渠",
+      "chunk_id": "63b7d4d0675426b5_chunk_0030",
+      "page_start": 25,
+      "page_end": 25
+    },
+    {
+      "citation_id": "G6",
+      "type": "graph",
+      "subject": "3 年一遇洪水控泄",
+      "predicate": "结合",
+      "object": "预泄流量200m3/s, 预泄水量0.35 亿m3",
+      "chunk_id": "63b7d4d0675426b5_chunk_0024",
+      "page_start": 19,
+      "page_end": 19
+    },
+    {
+      "citation_id": "T1",
+      "type": "text",
+      "chunk_id": "63b7d4d0675426b5_chunk_0029",
+      "page_start": 24,
+      "page_end": 24
+    },
+    {
+      "citation_id": "T2",
+      "type": "text",
+      "chunk_id": "63b7d4d0675426b5_chunk_0017",
+      "page_start": 12,
+      "page_end": 12
+    },
+    {
+      "citation_id": "T6",
+      "type": "text",
+      "chunk_id": "63b7d4d0675426b5_chunk_0041",
+      "page_start": 36,
+      "page_end": 36
+    }
+  ],
+  "evidence_package_path": "/home/dev/bxc/fastapi-study/notebooks/rag/generated/63b7d4d0675426b5/evidence_package.json"
+}

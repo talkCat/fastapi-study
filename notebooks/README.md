@@ -590,3 +590,32 @@ openai/001-005
 4. 学会用 `subgraphs=True` 观察子图 stream namespace
 5. 理解子图 checkpointer 的 per-invocation / per-thread / stateless 模式
 6. 跑通子图里的 interrupt 和状态查看
+
+---
+
+## 13. Deep Agents 学习 Notebook
+
+如果你想学习 LangChain Deep Agents，可以看：
+
+- `deepagents/quickstart/README.md`
+- `deepagents/quickstart/001-deep-agents-overview.ipynb`
+
+这一组 Notebook 会按照官方 Quickstart 文档逐步学习。
+
+第一份 Deep Agents Notebook 会做五件事：
+
+1. 理解 Deep Agents 是什么，以及它能解决什么问题
+2. 区分普通 Agent 和 Deep Agent 的能力差异
+3. 理解 Deep Agents 的核心组件：规划、工具、子代理、文件系统
+4. 用小型 Python 数据结构模拟一个研究任务的执行流程
+5. 明确后续课程每一步要产出什么
+
+推荐学习顺序：
+
+```text
+openai/001-005
+  -> agent-practice/001
+  -> harness-engineering/001-002
+  -> langchain/001-009
+  -> deepagents/quickstart/001-005
+```

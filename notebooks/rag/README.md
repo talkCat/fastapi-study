@@ -38,6 +38,7 @@ raw/北京市密云水库防御洪水方案.pdf
 - `006-write-graph-to-neo4j.ipynb`：把实体关系写入 Neo4j。
 - `007-hybrid-retrieval-plus-graph.ipynb`：BM25 + 向量 + 图检索。
 - `008-qa-with-evidence-and-validation.ipynb`：基于证据回答并做验证。
+- `009-groundedness-check.ipynb`：检查回答里的 claim 是否真的被证据支持。
 
 当前已完成：
 
@@ -45,6 +46,11 @@ raw/北京市密云水库防御洪水方案.pdf
 - `002-pdf-to-minio-and-parse.ipynb`
 - `003-clean-and-chunk-pdf-text.ipynb`
 - `004-summary-and-embedding-to-es.ipynb`
+- `005-triple-extraction-with-qwen.ipynb`
+- `006-write-graph-to-neo4j.ipynb`
+- `007-hybrid-retrieval-plus-graph.ipynb`
+- `008-qa-with-evidence-and-validation.ipynb`
+- `009-groundedness-check.ipynb`
 
 ## 当前环境
 

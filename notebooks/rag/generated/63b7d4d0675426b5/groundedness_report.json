@@ -1,0 +1,290 @@
+{
+  "question": "密引水渠引水流量不能满足泄洪要求应该怎么处理？",
+  "answer_source": "model",
+  "summary": {
+    "claim_count": 7,
+    "rule_counts": {
+      "missing_citation": 1,
+      "overlap_supported": 6
+    },
+    "judge_counts": {
+      "unsupported": 1,
+      "supported": 4
+    },
+    "has_hard_rule_fail": true,
+    "has_unsupported_judge": true,
+    "safe_to_return_without_review": false
+  },
+  "rule_results": [
+    {
+      "claim_id": "C1",
+      "text": "根据提供的证据，关于“密引水渠引水流量不能满足泄洪要求”的处理方式，证据中并未直接给出针对该特定情况的独立处理措施，但提供了相关的调度原则和超标准洪水下的应急方案。以下是基于证据的要点",
+      "citations": [],
+      "status": "missing_citation",
+      "overlap_terms": [],
+      "reason": "claim 没有引用证据编号"
+    },
+    {
+      "claim_id": "C2",
+      "text": "**常规控泄流量包含引水流量**：在正常调度规程中，水库的控泄流量是包含京密引水渠引水流量的。例如，当水库水位在152.00m至154.32m之间时，控泄流量为600m³/s，其中已包含京密引水渠引水流量50m³/s 。",
+      "citations": [
+        "T2"
+      ],
+      "status": "overlap_supported",
+      "overlap_terms": [
+        "00m",
+        "152",
+        "154",
+        "32m",
+        "50m",
+        "s",
+        "京密",
+        "京密引",
+        "京密引水",
+        "其中",
+        "包含",
+        "包含京",
+        "包含京密",
+        "含京",
+        "含京密",
+        "含京密引",
+        "密引",
+        "密引水",
+        "密引水渠",
+        "常调"
+      ],
+      "missing_required_terms": [],
+      "reason": "claim 和引用证据有 61 个关键词重合"
+    },
+    {
+      "claim_id": "C3",
+      "text": "**高水位时全开闸门不控泄**：当水库水位超过157.50m时，输、泄水建筑物闸门全部开启，不再进行控泄，此时引水流量对泄洪能力的限制不再适用 。",
+      "citations": [
+        "T2"
+      ],
+      "status": "overlap_supported",
+      "overlap_terms": [
+        "157",
+        "50m",
+        "不控",
+        "不控泄",
+        "位超",
+        "位超过",
+        "全部",
+        "全部开",
+        "全部开启",
+        "库水",
+        "库水位",
+        "库水位超",
+        "建筑",
+        "建筑物",
+        "建筑物闸",
+        "开启",
+        "引水",
+        "引水流",
+        "引水流量",
+        "当水"
+      ],
+      "missing_required_terms": [],
+      "reason": "claim 和引用证据有 48 个关键词重合"
+    },
+    {
+      "claim_id": "C4",
+      "text": "**超标准洪水下的极端措施**：若发生超标准洪水，且敞开各输、泄水建筑物泄洪仍不能满足工程安全要求时，经北京市水务局批准后，可选择炸开副坝的形式进行泄洪 。",
+      "citations": [
+        "T1"
+      ],
+      "status": "overlap_supported",
+      "overlap_terms": [
+        "不能",
+        "不能满",
+        "不能满足",
+        "京市",
+        "京市水",
+        "京市水务",
+        "仍不",
+        "仍不能",
+        "仍不能满",
+        "准后",
+        "准洪",
+        "准洪水",
+        "副坝",
+        "副坝的",
+        "副坝的形",
+        "务局",
+        "务局批",
+        "务局批准",
+        "北京",
+        "北京市"
+      ],
+      "missing_required_terms": [],
+      "reason": "claim 和引用证据有 110 个关键词重合"
+    },
+    {
+      "claim_id": "C5",
+      "text": "**利用预报调度预泄**：通过实施预报调度，根据洪水预报结果提前预泄，以降低库水位，从而为后续泄洪腾出库容。例如在预报调度模式下，最大下泄流量可达3000m³/s或4000m³/s，远高于常规调度 。",
+      "citations": [
+        "T1"
+      ],
+      "status": "overlap_supported",
+      "overlap_terms": [
+        "s",
+        "下泄",
+        "下泄流",
+        "下泄流量",
+        "出库",
+        "大下",
+        "大下泄",
+        "大下泄流",
+        "度模",
+        "报调",
+        "报调度",
+        "最大",
+        "最大下",
+        "最大下泄",
+        "水位",
+        "泄洪",
+        "泄流",
+        "泄流量",
+        "流量",
+        "调度"
+      ],
+      "missing_required_terms": [],
+      "reason": "claim 和引用证据有 25 个关键词重合"
+    },
+    {
+      "claim_id": "C6",
+      "text": "**证据中未明确具体替代方案**：虽然图谱证据提到了“京密引水渠引水流量不能满足泄洪要求”这一情境，但并未提供具体的处理步骤或替代调度方案，仅作为背景信息存在 。",
+      "citations": [
+        "G1",
+        "G1"
+      ],
+      "status": "overlap_supported",
+      "overlap_terms": [
+        "不能",
+        "不能满",
+        "不能满足",
+        "京密",
+        "京密引",
+        "京密引水",
+        "密引",
+        "密引水",
+        "密引水渠",
+        "引水",
+        "引水流",
+        "引水流量",
+        "引水渠",
+        "引水渠引",
+        "水流",
+        "水流量",
+        "水流量不",
+        "水渠",
+        "水渠引",
+        "水渠引水"
+      ],
+      "missing_required_terms": [],
+      "reason": "claim 和引用证据有 45 个关键词重合"
+    },
+    {
+      "claim_id": "C7",
+      "text": "证据覆盖范围：文本证据（-）提供了密云水库的调度规程、超标准洪水预案及具体水位流量关系；图谱证据（-）主要提供了洪水调度示例数据及京密引水渠与调节池的调度关系，但未提供针对引水流量不足的具体处理措施。",
+      "citations": [
+        "T1",
+        "T6",
+        "G1",
+        "G6"
+      ],
+      "status": "overlap_supported",
+      "overlap_terms": [
+        "云水",
+        "云水库",
+        "京密",
+        "京密引",
+        "京密引水",
+        "准洪",
+        "准洪水",
+        "密云水",
+        "密云水库",
+        "密引",
+        "密引水",
+        "密引水渠",
+        "库的",
+        "度规",
+        "度规程",
+        "引水",
+        "引水流",
+        "引水流量",
+        "引水渠",
+        "措施"
+      ],
+      "missing_required_terms": [],
+      "reason": "claim 和引用证据有 49 个关键词重合"
+    }
+  ],
+  "judge_results": [
+    {
+      "claim_id": "C1",
+      "text": "根据提供的证据，关于“密引水渠引水流量不能满足泄洪要求”的处理方式，证据中并未直接给出针对该特定情况的独立处理措施，但提供了相关的调度原则和超标准洪水下的应急方案。以下是基于证据的要点",
+      "citations": [],
+      "label": "unsupported",
+      "reason": "claim 没有引用证据"
+    },
+    {
+      "claim_id": "C2",
+      "text": "**常规控泄流量包含引水流量**：在正常调度规程中，水库的控泄流量是包含京密引水渠引水流量的。例如，当水库水位在152.00m至154.32m之间时，控泄流量为600m³/s，其中已包含京密引水渠引水流量50m³/s 。",
+      "citations": [
+        "T2"
+      ],
+      "label": "supported",
+      "reason": "evidence支持claim",
+      "raw": "{\"label\":\"supported\",\"reason\":\"evidence支持claim\"}"
+    },
+    {
+      "claim_id": "C3",
+      "text": "**高水位时全开闸门不控泄**：当水库水位超过157.50m时，输、泄水建筑物闸门全部开启，不再进行控泄，此时引水流量对泄洪能力的限制不再适用 。",
+      "citations": [
+        "T2"
+      ],
+      "label": "supported",
+      "reason": "evidence支持该说法",
+      "raw": "{\"label\":\"supported\",\"reason\":\"evidence支持该说法\"}"
+    },
+    {
+      "claim_id": "C4",
+      "text": "**超标准洪水下的极端措施**：若发生超标准洪水，且敞开各输、泄水建筑物泄洪仍不能满足工程安全要求时，经北京市水务局批准后，可选择炸开副坝的形式进行泄洪 。",
+      "citations": [
+        "T1"
+      ],
+      "label": "supported",
+      "reason": "证据支持了超标准洪水下的极端措施",
+      "raw": "{\"label\":\"supported\",\"reason\":\"证据支持了超标准洪水下的极端措施\"}"
+    },
+    {
+      "claim_id": "C_BAD",
+      "text": "密云水库防御洪水方案要求每季度组织一次全员演练。",
+      "citations": [
+        "T1"
+      ],
+      "label": "supported",
+      "reason": "evidence支持claim",
+      "raw": "{\"label\":\"supported\",\"reason\":\"evidence支持claim\"}"
+    }
+  ],
+  "bad_claim_demo": {
+    "claim_id": "C_BAD",
+    "text": "密云水库防御洪水方案要求每季度组织一次全员演练。",
+    "citations": [
+      "T1"
+    ],
+    "status": "missing_required_terms",
+    "overlap_terms": [],
+    "missing_required_terms": [
+      "全员",
+      "每季度",
+      "演练"
+    ],
+    "reason": "claim 含有精确约束词，但引用证据未出现: ['全员', '每季度', '演练']"
+  },
+  "qa_result_path": "/home/dev/bxc/fastapi-study/notebooks/rag/generated/63b7d4d0675426b5/qa_result.json",
+  "evidence_package_path": "/home/dev/bxc/fastapi-study/notebooks/rag/generated/63b7d4d0675426b5/evidence_package.json"
+}

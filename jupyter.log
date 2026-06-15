@@ -1,0 +1,600 @@
+nohup: ignoring input
+[I 2026-06-12 11:42:46.867 ServerApp] jupyter_lsp | extension was successfully linked.
+[I 2026-06-12 11:42:46.872 ServerApp] jupyter_server_terminals | extension was successfully linked.
+[I 2026-06-12 11:42:46.877 ServerApp] jupyterlab | extension was successfully linked.
+[I 2026-06-12 11:42:46.881 ServerApp] notebook | extension was successfully linked.
+[I 2026-06-12 11:42:47.185 ServerApp] notebook_shim | extension was successfully linked.
+[I 2026-06-12 11:42:47.210 ServerApp] notebook_shim | extension was successfully loaded.
+[I 2026-06-12 11:42:47.212 ServerApp] jupyter_lsp | extension was successfully loaded.
+[I 2026-06-12 11:42:47.213 ServerApp] jupyter_server_terminals | extension was successfully loaded.
+[I 2026-06-12 11:42:47.215 LabApp] JupyterLab extension loaded from /home/dev/bxc/fastapi-study/.venv/lib/python3.13/site-packages/jupyterlab
+[I 2026-06-12 11:42:47.216 LabApp] JupyterLab application directory is /home/dev/bxc/fastapi-study/.venv/share/jupyter/lab
+[I 2026-06-12 11:42:47.216 LabApp] Extension Manager is 'pypi'.
+[I 2026-06-12 11:42:47.253 ServerApp] jupyterlab | extension was successfully loaded.
+[I 2026-06-12 11:42:47.260 ServerApp] notebook | extension was successfully loaded.
+[I 2026-06-12 11:42:47.262 ServerApp] Serving notebooks from local directory: /home/dev/bxc/fastapi-study
+[I 2026-06-12 11:42:47.262 ServerApp] Jupyter Server 2.18.2 is running at:
+[I 2026-06-12 11:42:47.262 ServerApp] http://gpu-server:8888/tree?token=6cb572d451d509fd963ecc62638b7a470fb2cd2c64bc1656
+[I 2026-06-12 11:42:47.262 ServerApp]     http://127.0.0.1:8888/tree?token=6cb572d451d509fd963ecc62638b7a470fb2cd2c64bc1656
+[I 2026-06-12 11:42:47.262 ServerApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[C 2026-06-12 11:42:47.266 ServerApp] 
+    
+    To access the server, open this file in a browser:
+        file:///home/dev/.local/share/jupyter/runtime/jpserver-2558986-open.html
+    Or copy and paste one of these URLs:
+        http://gpu-server:8888/tree?token=6cb572d451d509fd963ecc62638b7a470fb2cd2c64bc1656
+        http://127.0.0.1:8888/tree?token=6cb572d451d509fd963ecc62638b7a470fb2cd2c64bc1656
+[I 2026-06-12 11:42:47.437 ServerApp] Skipped non-installed server(s): bash-language-server, dockerfile-language-server-nodejs, javascript-typescript-langserver, jedi-language-server, julia-language-server, pyrefly, pyright, python-language-server, python-lsp-server, r-languageserver, sql-language-server, texlab, typescript-language-server, unified-language-server, vscode-css-languageserver-bin, vscode-html-languageserver-bin, vscode-json-languageserver-bin, yaml-language-server
+[W 2026-06-12 11:42:48.620 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:48.621 ServerApp] 403 GET /api/kernelspecs?1781235768534 (@127.0.0.1) 2.63ms referer=None
+[W 2026-06-12 11:42:49.212 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:49.213 ServerApp] 403 GET /api/kernels/105caad1-211f-40b2-8a77-9c68a2e96034?1781235769199 (@127.0.0.1) 1.71ms referer=None
+[W 2026-06-12 11:42:51.269 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:51.269 ServerApp] 403 GET /api/kernels?1781235771252 (@127.0.0.1) 1.28ms referer=None
+[W 2026-06-12 11:42:51.271 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:51.271 ServerApp] 403 GET /api/sessions?1781235771260 (@127.0.0.1) 1.16ms referer=None
+[I 2026-06-12 11:42:51.272 ServerApp] 302 GET / (@127.0.0.1) 1.70ms
+[W 2026-06-12 11:42:51.273 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:51.273 ServerApp] 403 GET /api/kernelspecs?1781235771232 (@127.0.0.1) 1.36ms referer=None
+[W 2026-06-12 11:42:51.273 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:51.274 ServerApp] 403 GET /api/kernels?1781235771239 (@127.0.0.1) 1.69ms referer=None
+[I 2026-06-12 11:42:51.309 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 2.41ms
+[W 2026-06-12 11:42:51.309 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:51.310 ServerApp] 403 GET /api/kernelspecs?1781235771281 (@127.0.0.1) 3.11ms referer=None
+[W 2026-06-12 11:42:51.310 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:51.311 ServerApp] 403 GET /api/sessions?1781235771287 (@127.0.0.1) 3.35ms referer=None
+[I 2026-06-12 11:42:51.312 ServerApp] 302 GET / (@127.0.0.1) 0.52ms
+[I 2026-06-12 11:42:51.361 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 0.59ms
+[W 2026-06-12 11:42:51.379 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:51.380 ServerApp] 403 GET /api/kernelspecs?1781235771363 (@127.0.0.1) 1.39ms referer=None
+[W 2026-06-12 11:42:51.411 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:51.411 ServerApp] 403 GET /api/kernels?1781235771370 (@127.0.0.1) 1.40ms referer=None
+[W 2026-06-12 11:42:51.413 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:51.414 ServerApp] 403 GET /api/kernels?1781235771378 (@127.0.0.1) 1.73ms referer=None
+[W 2026-06-12 11:42:51.414 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:51.415 ServerApp] 403 GET /api/sessions?1781235771385 (@127.0.0.1) 2.38ms referer=None
+[W 2026-06-12 11:42:51.417 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:51.418 ServerApp] 403 GET /api/kernelspecs?1781235771402 (@127.0.0.1) 1.30ms referer=None
+[W 2026-06-12 11:42:51.444 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:51.445 ServerApp] 403 GET /api/kernelspecs?1781235771424 (@127.0.0.1) 1.28ms referer=None
+[W 2026-06-12 11:42:51.468 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:51.469 ServerApp] 403 GET /api/kernels?1781235771451 (@127.0.0.1) 2.27ms referer=None
+[W 2026-06-12 11:42:51.470 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:51.471 ServerApp] 403 GET /api/sessions?1781235771458 (@127.0.0.1) 3.05ms referer=None
+[I 2026-06-12 11:42:51.472 ServerApp] 302 GET / (@127.0.0.1) 1.08ms
+[W 2026-06-12 11:42:51.473 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:51.473 ServerApp] 403 GET /api/kernels?1781235771433 (@127.0.0.1) 1.55ms referer=None
+[W 2026-06-12 11:42:51.488 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:51.489 ServerApp] 403 GET /api/kernelspecs?1781235771468 (@127.0.0.1) 1.80ms referer=None
+[I 2026-06-12 11:42:51.490 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 2.23ms
+[W 2026-06-12 11:42:51.522 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:51.522 ServerApp] 403 GET /api/kernelspecs?1781235771506 (@127.0.0.1) 1.44ms referer=None
+[W 2026-06-12 11:42:51.537 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:51.538 ServerApp] 403 GET /api/kernels?1781235771513 (@127.0.0.1) 1.48ms referer=None
+[W 2026-06-12 11:42:51.540 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:51.540 ServerApp] 403 GET /api/sessions?1781235771528 (@127.0.0.1) 1.38ms referer=None
+[W 2026-06-12 11:42:51.541 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:51.542 ServerApp] 403 GET /api/kernels?1781235771521 (@127.0.0.1) 1.10ms referer=None
+[W 2026-06-12 11:42:51.550 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:51.551 ServerApp] 403 GET /api/kernelspecs?1781235771538 (@127.0.0.1) 0.98ms referer=None
+[W 2026-06-12 11:42:53.180 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:53.180 ServerApp] 403 GET /api/kernels/41105a6a-3588-4d88-b869-7af810fa0304?1781235773165 (@127.0.0.1) 0.91ms referer=None
+[W 2026-06-12 11:42:53.265 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:53.266 ServerApp] 403 GET /api/kernels/62620daf-d0a5-4e50-a3e5-1fe2e547ad42?1781235773253 (@127.0.0.1) 0.94ms referer=None
+[I 2026-06-12 11:42:55.294 ServerApp] 302 GET / (@127.0.0.1) 0.89ms
+[I 2026-06-12 11:42:55.296 ServerApp] 302 GET / (@127.0.0.1) 0.82ms
+[I 2026-06-12 11:42:55.328 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 1.16ms
+[I 2026-06-12 11:42:55.330 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 1.14ms
+[W 2026-06-12 11:42:55.388 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:55.389 ServerApp] 403 GET /api/kernelspecs?1781235775362 (@127.0.0.1) 1.04ms referer=None
+[W 2026-06-12 11:42:55.418 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:55.419 ServerApp] 403 GET /api/kernelspecs?1781235775404 (@127.0.0.1) 1.51ms referer=None
+[W 2026-06-12 11:42:55.443 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:55.444 ServerApp] 403 GET /api/kernels?1781235775375 (@127.0.0.1) 1.36ms referer=None
+[W 2026-06-12 11:42:55.445 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:55.446 ServerApp] 403 GET /api/kernels?1781235775387 (@127.0.0.1) 1.29ms referer=None
+[W 2026-06-12 11:42:55.446 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:55.447 ServerApp] 403 GET /api/sessions?1781235775396 (@127.0.0.1) 1.82ms referer=None
+[W 2026-06-12 11:42:55.460 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:55.461 ServerApp] 403 GET /api/kernels?1781235775410 (@127.0.0.1) 1.21ms referer=None
+[W 2026-06-12 11:42:55.462 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:55.463 ServerApp] 403 GET /api/kernelspecs?1781235775418 (@127.0.0.1) 1.72ms referer=None
+[W 2026-06-12 11:42:55.463 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:55.464 ServerApp] 403 GET /api/kernels?1781235775425 (@127.0.0.1) 2.16ms referer=None
+[W 2026-06-12 11:42:55.464 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:55.464 ServerApp] 403 GET /api/sessions?1781235775432 (@127.0.0.1) 2.62ms referer=None
+[W 2026-06-12 11:42:55.466 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:55.466 ServerApp] 403 GET /api/kernelspecs?1781235775442 (@127.0.0.1) 1.33ms referer=None
+[I 2026-06-12 11:42:55.466 ServerApp] 302 GET / (@127.0.0.1) 1.19ms
+[I 2026-06-12 11:42:55.483 ServerApp] 302 GET / (@127.0.0.1) 0.56ms
+[I 2026-06-12 11:42:55.484 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 0.76ms
+[I 2026-06-12 11:42:55.503 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 0.84ms
+[W 2026-06-12 11:42:55.518 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:55.519 ServerApp] 403 GET /api/kernelspecs?1781235775503 (@127.0.0.1) 1.22ms referer=None
+[W 2026-06-12 11:42:55.542 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:55.542 ServerApp] 403 GET /api/kernels?1781235775510 (@127.0.0.1) 1.93ms referer=None
+[W 2026-06-12 11:42:55.544 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:55.545 ServerApp] 403 GET /api/kernels?1781235775525 (@127.0.0.1) 0.78ms referer=None
+[W 2026-06-12 11:42:55.564 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:55.565 ServerApp] 403 GET /api/kernelspecs?1781235775548 (@127.0.0.1) 1.29ms referer=None
+[W 2026-06-12 11:42:55.566 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:55.567 ServerApp] 403 GET /api/sessions?1781235775532 (@127.0.0.1) 0.98ms referer=None
+[W 2026-06-12 11:42:55.592 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:55.593 ServerApp] 403 GET /api/kernelspecs?1781235775540 (@127.0.0.1) 1.17ms referer=None
+[W 2026-06-12 11:42:55.594 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:55.595 ServerApp] 403 GET /api/kernels?1781235775555 (@127.0.0.1) 1.60ms referer=None
+[W 2026-06-12 11:42:55.595 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:55.595 ServerApp] 403 GET /api/kernels?1781235775565 (@127.0.0.1) 1.86ms referer=None
+[W 2026-06-12 11:42:55.596 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:55.596 ServerApp] 403 GET /api/sessions?1781235775572 (@127.0.0.1) 2.22ms referer=None
+[W 2026-06-12 11:42:55.597 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:55.597 ServerApp] 403 GET /api/kernelspecs?1781235775584 (@127.0.0.1) 0.88ms referer=None
+[W 2026-06-12 11:42:57.047 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:57.048 ServerApp] 403 GET /api/kernelspecs?1781235777037 (@127.0.0.1) 1.27ms referer=None
+[W 2026-06-12 11:42:57.257 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:57.257 ServerApp] 403 GET /api/kernels/d468060b-d744-4e16-8f52-fd6c5dab4844?1781235777247 (@127.0.0.1) 1.20ms referer=None
+[I 2026-06-12 11:42:59.280 ServerApp] 302 GET / (@127.0.0.1) 0.64ms
+[I 2026-06-12 11:42:59.281 ServerApp] 302 GET / (@127.0.0.1) 0.49ms
+[I 2026-06-12 11:42:59.297 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 0.73ms
+[I 2026-06-12 11:42:59.298 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 0.67ms
+[W 2026-06-12 11:42:59.332 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:59.333 ServerApp] 403 GET /api/kernelspecs?1781235779318 (@127.0.0.1) 1.20ms referer=None
+[W 2026-06-12 11:42:59.361 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:59.361 ServerApp] 403 GET /api/kernelspecs?1781235779345 (@127.0.0.1) 1.34ms referer=None
+[W 2026-06-12 11:42:59.387 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:59.388 ServerApp] 403 GET /api/kernels?1781235779324 (@127.0.0.1) 1.50ms referer=None
+[W 2026-06-12 11:42:59.388 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:59.389 ServerApp] 403 GET /api/kernels?1781235779331 (@127.0.0.1) 1.94ms referer=None
+[W 2026-06-12 11:42:59.389 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:59.390 ServerApp] 403 GET /api/sessions?1781235779338 (@127.0.0.1) 0.80ms referer=None
+[W 2026-06-12 11:42:59.406 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:59.407 ServerApp] 403 GET /api/kernels?1781235779351 (@127.0.0.1) 1.38ms referer=None
+[W 2026-06-12 11:42:59.408 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:59.409 ServerApp] 403 GET /api/kernelspecs?1781235779362 (@127.0.0.1) 1.72ms referer=None
+[W 2026-06-12 11:42:59.409 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:59.410 ServerApp] 403 GET /api/kernels?1781235779371 (@127.0.0.1) 2.16ms referer=None
+[W 2026-06-12 11:42:59.411 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:59.412 ServerApp] 403 GET /api/kernelspecs?1781235779386 (@127.0.0.1) 1.60ms referer=None
+[I 2026-06-12 11:42:59.412 ServerApp] 302 GET / (@127.0.0.1) 1.56ms
+[W 2026-06-12 11:42:59.413 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:59.414 ServerApp] 403 GET /api/sessions?1781235779377 (@127.0.0.1) 1.11ms referer=None
+[I 2026-06-12 11:42:59.433 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 0.86ms
+[I 2026-06-12 11:42:59.435 ServerApp] 302 GET / (@127.0.0.1) 0.62ms
+[I 2026-06-12 11:42:59.455 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 0.89ms
+[W 2026-06-12 11:42:59.469 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:59.470 ServerApp] 403 GET /api/kernelspecs?1781235779455 (@127.0.0.1) 1.45ms referer=None
+[W 2026-06-12 11:42:59.503 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:59.504 ServerApp] 403 GET /api/kernels?1781235779461 (@127.0.0.1) 1.44ms referer=None
+[W 2026-06-12 11:42:59.506 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:59.507 ServerApp] 403 GET /api/kernels?1781235779468 (@127.0.0.1) 2.56ms referer=None
+[W 2026-06-12 11:42:59.507 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:59.507 ServerApp] 403 GET /api/sessions?1781235779475 (@127.0.0.1) 2.78ms referer=None
+[W 2026-06-12 11:42:59.508 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:59.509 ServerApp] 403 GET /api/kernelspecs?1781235779492 (@127.0.0.1) 3.38ms referer=None
+[I 2026-06-12 11:42:59.509 ServerApp] 302 GET / (@127.0.0.1) 3.02ms
+[I 2026-06-12 11:42:59.515 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 0.56ms
+[W 2026-06-12 11:42:59.525 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:59.525 ServerApp] 403 GET /api/kernelspecs?1781235779510 (@127.0.0.1) 0.84ms referer=None
+[W 2026-06-12 11:42:59.542 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:59.542 ServerApp] 403 GET /api/kernels?1781235779517 (@127.0.0.1) 1.38ms referer=None
+[W 2026-06-12 11:42:59.550 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:59.550 ServerApp] 403 GET /api/kernels?1781235779525 (@127.0.0.1) 1.10ms referer=None
+[W 2026-06-12 11:42:59.551 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:59.552 ServerApp] 403 GET /api/sessions?1781235779532 (@127.0.0.1) 0.80ms referer=None
+[W 2026-06-12 11:42:59.553 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:42:59.553 ServerApp] 403 GET /api/kernelspecs?1781235779540 (@127.0.0.1) 0.85ms referer=None
+[W 2026-06-12 11:43:00.295 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:00.296 ServerApp] 403 GET /api/kernels/18c6ba8e-0ed2-4bb0-8b0a-b5309d0c06f3?1781235780282 (@127.0.0.1) 1.03ms referer=None
+[W 2026-06-12 11:43:01.214 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:01.215 ServerApp] 403 GET /api/kernels/b6638ebd-ccdb-4ac5-950a-c7099a3534d6?1781235781204 (@127.0.0.1) 1.34ms referer=None
+[I 2026-06-12 11:43:03.239 ServerApp] 302 GET / (@127.0.0.1) 0.69ms
+[I 2026-06-12 11:43:03.240 ServerApp] 302 GET / (@127.0.0.1) 0.47ms
+[I 2026-06-12 11:43:03.255 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 0.73ms
+[I 2026-06-12 11:43:03.256 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 0.52ms
+[W 2026-06-12 11:43:03.292 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:03.293 ServerApp] 403 GET /api/kernelspecs?1781235783277 (@127.0.0.1) 0.94ms referer=None
+[W 2026-06-12 11:43:03.308 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:03.309 ServerApp] 403 GET /api/kernelspecs?1781235783293 (@127.0.0.1) 1.53ms referer=None
+[W 2026-06-12 11:43:03.341 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:03.341 ServerApp] 403 GET /api/kernels?1781235783284 (@127.0.0.1) 1.35ms referer=None
+[W 2026-06-12 11:43:03.358 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:03.358 ServerApp] 403 GET /api/kernels?1781235783299 (@127.0.0.1) 1.48ms referer=None
+[W 2026-06-12 11:43:03.361 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:03.361 ServerApp] 403 GET /api/kernels?1781235783309 (@127.0.0.1) 2.51ms referer=None
+[W 2026-06-12 11:43:03.362 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:03.362 ServerApp] 403 GET /api/sessions?1781235783316 (@127.0.0.1) 2.92ms referer=None
+[W 2026-06-12 11:43:03.362 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:03.363 ServerApp] 403 GET /api/kernels?1781235783323 (@127.0.0.1) 2.96ms referer=None
+[W 2026-06-12 11:43:03.364 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:03.364 ServerApp] 403 GET /api/kernelspecs?1781235783347 (@127.0.0.1) 0.70ms referer=None
+[W 2026-06-12 11:43:03.365 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:03.365 ServerApp] 403 GET /api/sessions?1781235783330 (@127.0.0.1) 0.85ms referer=None
+[W 2026-06-12 11:43:03.365 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:03.365 ServerApp] 403 GET /api/kernelspecs?1781235783340 (@127.0.0.1) 1.16ms referer=None
+[I 2026-06-12 11:43:03.384 ServerApp] 302 GET / (@127.0.0.1) 1.28ms
+[I 2026-06-12 11:43:03.385 ServerApp] 302 GET / (@127.0.0.1) 1.25ms
+[I 2026-06-12 11:43:03.402 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 0.77ms
+[I 2026-06-12 11:43:03.403 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 0.56ms
+[W 2026-06-12 11:43:03.436 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:03.437 ServerApp] 403 GET /api/kernelspecs?1781235783420 (@127.0.0.1) 1.58ms referer=None
+[W 2026-06-12 11:43:03.450 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:03.451 ServerApp] 403 GET /api/kernelspecs?1781235783435 (@127.0.0.1) 1.55ms referer=None
+[W 2026-06-12 11:43:03.494 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:03.495 ServerApp] 403 GET /api/kernels?1781235783427 (@127.0.0.1) 1.89ms referer=None
+[W 2026-06-12 11:43:03.495 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:03.496 ServerApp] 403 GET /api/kernels?1781235783442 (@127.0.0.1) 2.21ms referer=None
+[W 2026-06-12 11:43:03.496 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:03.497 ServerApp] 403 GET /api/kernels?1781235783449 (@127.0.0.1) 2.68ms referer=None
+[W 2026-06-12 11:43:03.498 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:03.498 ServerApp] 403 GET /api/sessions?1781235783457 (@127.0.0.1) 1.52ms referer=None
+[W 2026-06-12 11:43:03.499 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:03.499 ServerApp] 403 GET /api/kernels?1781235783465 (@127.0.0.1) 1.91ms referer=None
+[W 2026-06-12 11:43:03.500 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:03.500 ServerApp] 403 GET /api/sessions?1781235783475 (@127.0.0.1) 2.44ms referer=None
+[W 2026-06-12 11:43:03.507 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:03.508 ServerApp] 403 GET /api/kernelspecs?1781235783485 (@127.0.0.1) 0.87ms referer=None
+[W 2026-06-12 11:43:03.508 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:03.509 ServerApp] 403 GET /api/kernelspecs?1781235783492 (@127.0.0.1) 0.59ms referer=None
+[W 2026-06-12 11:43:05.183 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:05.184 ServerApp] 403 GET /api/kernels/c18e3ab4-d850-42ea-bb8f-7d83fdd43ea2?1781235785168 (@127.0.0.1) 1.32ms referer=None
+[W 2026-06-12 11:43:06.174 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:06.175 ServerApp] 403 GET /api/kernels/043541c7-6f2e-48c7-a54a-ac427dd83494?1781235786161 (@127.0.0.1) 1.35ms referer=None
+[I 2026-06-12 11:43:08.221 ServerApp] 302 GET / (@127.0.0.1) 0.77ms
+[I 2026-06-12 11:43:08.223 ServerApp] 302 GET / (@127.0.0.1) 0.66ms
+[I 2026-06-12 11:43:08.246 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 0.85ms
+[I 2026-06-12 11:43:08.247 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 0.71ms
+[W 2026-06-12 11:43:08.291 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:08.292 ServerApp] 403 GET /api/kernelspecs?1781235788270 (@127.0.0.1) 1.53ms referer=None
+[W 2026-06-12 11:43:08.343 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:08.344 ServerApp] 403 GET /api/kernelspecs?1781235788313 (@127.0.0.1) 2.23ms referer=None
+[W 2026-06-12 11:43:08.397 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:08.397 ServerApp] 403 GET /api/kernels?1781235788280 (@127.0.0.1) 1.38ms referer=None
+[W 2026-06-12 11:43:08.398 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:08.398 ServerApp] 403 GET /api/kernels?1781235788290 (@127.0.0.1) 1.92ms referer=None
+[W 2026-06-12 11:43:08.398 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:08.399 ServerApp] 403 GET /api/sessions?1781235788300 (@127.0.0.1) 2.39ms referer=None
+[W 2026-06-12 11:43:08.415 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:08.416 ServerApp] 403 GET /api/kernels?1781235788327 (@127.0.0.1) 0.87ms referer=None
+[W 2026-06-12 11:43:08.417 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:08.417 ServerApp] 403 GET /api/kernelspecs?1781235788357 (@127.0.0.1) 1.04ms referer=None
+[W 2026-06-12 11:43:08.417 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:08.418 ServerApp] 403 GET /api/kernels?1781235788371 (@127.0.0.1) 1.28ms referer=None
+[W 2026-06-12 11:43:08.418 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:08.418 ServerApp] 403 GET /api/sessions?1781235788383 (@127.0.0.1) 1.66ms referer=None
+[I 2026-06-12 11:43:08.419 ServerApp] 302 GET / (@127.0.0.1) 0.35ms
+[W 2026-06-12 11:43:08.419 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:08.420 ServerApp] 403 GET /api/kernelspecs?1781235788396 (@127.0.0.1) 0.68ms referer=None
+[I 2026-06-12 11:43:08.435 ServerApp] 302 GET / (@127.0.0.1) 1.27ms
+[I 2026-06-12 11:43:08.435 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 1.35ms
+[I 2026-06-12 11:43:08.452 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 0.68ms
+[W 2026-06-12 11:43:08.472 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:08.473 ServerApp] 403 GET /api/kernelspecs?1781235788452 (@127.0.0.1) 1.39ms referer=None
+[W 2026-06-12 11:43:08.518 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:08.519 ServerApp] 403 GET /api/kernels?1781235788461 (@127.0.0.1) 1.78ms referer=None
+[W 2026-06-12 11:43:08.521 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:08.522 ServerApp] 403 GET /api/kernels?1781235788471 (@127.0.0.1) 2.59ms referer=None
+[W 2026-06-12 11:43:08.523 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:08.523 ServerApp] 403 GET /api/sessions?1781235788481 (@127.0.0.1) 3.17ms referer=None
+[W 2026-06-12 11:43:08.525 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:08.525 ServerApp] 403 GET /api/kernelspecs?1781235788503 (@127.0.0.1) 4.54ms referer=None
+[W 2026-06-12 11:43:08.547 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:08.548 ServerApp] 403 GET /api/kernelspecs?1781235788526 (@127.0.0.1) 1.58ms referer=None
+[W 2026-06-12 11:43:08.570 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:08.571 ServerApp] 403 GET /api/kernels?1781235788536 (@127.0.0.1) 1.10ms referer=None
+[W 2026-06-12 11:43:08.584 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:08.585 ServerApp] 403 GET /api/kernels?1781235788547 (@127.0.0.1) 1.53ms referer=None
+[W 2026-06-12 11:43:08.585 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:08.585 ServerApp] 403 GET /api/sessions?1781235788557 (@127.0.0.1) 1.97ms referer=None
+[W 2026-06-12 11:43:08.587 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-12 11:43:08.587 ServerApp] 403 GET /api/kernelspecs?1781235788569 (@127.0.0.1) 0.88ms referer=None
+[I 2026-06-12 11:43:50.090 ServerApp] User f650681f76c248528d77c0b001c74742 logged in.
+[I 2026-06-12 11:43:50.091 ServerApp] 302 POST /login?next=%2Ftree%3F (f650681f76c248528d77c0b001c74742@127.0.0.1) 2.49ms
+[I 2026-06-12 11:43:57.671 ServerApp] User 42baec1fa3954fd1a08c5b54eae3b457 logged in.
+[I 2026-06-12 11:43:57.672 ServerApp] 302 POST /login? (42baec1fa3954fd1a08c5b54eae3b457@127.0.0.1) 1.48ms
+[I 2026-06-12 11:44:35.638 ServerApp] Kernel started: 0429b8f1-7234-40f5-a693-3b8822d5d4f7
+[I 2026-06-12 11:44:36.305 ServerApp] Adapting from protocol version 5.3 (kernel 0429b8f1-7234-40f5-a693-3b8822d5d4f7) to 5.4 (client).
+[I 2026-06-12 11:44:36.308 ServerApp] Connecting to kernel 0429b8f1-7234-40f5-a693-3b8822d5d4f7.
+[W 2026-06-12 11:44:36.310 ServerApp] The websocket_ping_timeout (90000) cannot be longer than the websocket_ping_interval (30000).
+    Setting websocket_ping_timeout=30000
+[I 2026-06-12 13:45:35.700 ServerApp] Adapting from protocol version 5.3 (kernel 0429b8f1-7234-40f5-a693-3b8822d5d4f7) to 5.4 (client).
+[I 2026-06-12 13:45:35.701 ServerApp] Connecting to kernel 0429b8f1-7234-40f5-a693-3b8822d5d4f7.
+[I 2026-06-12 14:12:25.724 ServerApp] Starting buffering for 0429b8f1-7234-40f5-a693-3b8822d5d4f7:5b943986-e244-42a2-a1ce-733a4208ce59
+[I 2026-06-12 14:17:56.285 ServerApp] Kernel started: b6b291b7-7397-40f6-9f7b-a73244f8daa2
+[I 2026-06-12 14:17:56.982 ServerApp] Adapting from protocol version 5.3 (kernel b6b291b7-7397-40f6-9f7b-a73244f8daa2) to 5.4 (client).
+[I 2026-06-12 14:17:56.983 ServerApp] Connecting to kernel b6b291b7-7397-40f6-9f7b-a73244f8daa2.
+[I 2026-06-12 14:33:53.679 ServerApp] Kernel started: 2d98b3ac-0940-45f9-b256-567effdecff5
+[I 2026-06-12 14:33:54.432 ServerApp] Adapting from protocol version 5.3 (kernel 2d98b3ac-0940-45f9-b256-567effdecff5) to 5.4 (client).
+[I 2026-06-12 14:33:54.434 ServerApp] Connecting to kernel 2d98b3ac-0940-45f9-b256-567effdecff5.
+[I 2026-06-12 14:45:12.745 ServerApp] Kernel started: e750de78-4eae-4ddf-9a08-e039e7eaf48f
+[I 2026-06-12 14:45:13.427 ServerApp] Adapting from protocol version 5.3 (kernel e750de78-4eae-4ddf-9a08-e039e7eaf48f) to 5.4 (client).
+[I 2026-06-12 14:45:13.429 ServerApp] Connecting to kernel e750de78-4eae-4ddf-9a08-e039e7eaf48f.
+[I 2026-06-12 15:04:15.600 ServerApp] Kernel started: 9f2fd0cb-979e-48b9-9b4b-4e177d87e372
+[I 2026-06-12 15:04:16.188 ServerApp] Adapting from protocol version 5.3 (kernel 9f2fd0cb-979e-48b9-9b4b-4e177d87e372) to 5.4 (client).
+[I 2026-06-12 15:04:16.189 ServerApp] Connecting to kernel 9f2fd0cb-979e-48b9-9b4b-4e177d87e372.
+[I 2026-06-12 15:29:07.547 ServerApp] Kernel interrupted: 9f2fd0cb-979e-48b9-9b4b-4e177d87e372
+[I 2026-06-12 15:29:20.904 ServerApp] Kernel interrupted: 9f2fd0cb-979e-48b9-9b4b-4e177d87e372
+[I 2026-06-12 15:29:29.269 ServerApp] Kernel restarted: 9f2fd0cb-979e-48b9-9b4b-4e177d87e372
+[I 2026-06-12 15:29:29.274 ServerApp] Starting buffering for 9f2fd0cb-979e-48b9-9b4b-4e177d87e372:bc7071d6-2359-4c40-8114-1d531b89bf09
+[I 2026-06-12 15:29:29.282 ServerApp] Adapting from protocol version 5.3 (kernel 9f2fd0cb-979e-48b9-9b4b-4e177d87e372) to 5.4 (client).
+[I 2026-06-12 15:29:29.283 ServerApp] Connecting to kernel 9f2fd0cb-979e-48b9-9b4b-4e177d87e372.
+[I 2026-06-12 15:29:29.283 ServerApp] Restoring connection for 9f2fd0cb-979e-48b9-9b4b-4e177d87e372:bc7071d6-2359-4c40-8114-1d531b89bf09
+[I 2026-06-12 16:02:08.172 ServerApp] Kernel interrupted: 9f2fd0cb-979e-48b9-9b4b-4e177d87e372
+[I 2026-06-12 16:02:14.090 ServerApp] Kernel restarted: 9f2fd0cb-979e-48b9-9b4b-4e177d87e372
+[I 2026-06-12 16:02:14.096 ServerApp] Starting buffering for 9f2fd0cb-979e-48b9-9b4b-4e177d87e372:bc7071d6-2359-4c40-8114-1d531b89bf09
+[I 2026-06-12 16:02:14.107 ServerApp] Adapting from protocol version 5.3 (kernel 9f2fd0cb-979e-48b9-9b4b-4e177d87e372) to 5.4 (client).
+[I 2026-06-12 16:02:14.109 ServerApp] Connecting to kernel 9f2fd0cb-979e-48b9-9b4b-4e177d87e372.
+[I 2026-06-12 16:02:14.109 ServerApp] Restoring connection for 9f2fd0cb-979e-48b9-9b4b-4e177d87e372:bc7071d6-2359-4c40-8114-1d531b89bf09
+[I 2026-06-12 16:54:00.479 ServerApp] Kernel started: cc832ebd-faa3-4195-bdea-73900d8135f4
+[I 2026-06-12 16:54:01.195 ServerApp] Adapting from protocol version 5.3 (kernel cc832ebd-faa3-4195-bdea-73900d8135f4) to 5.4 (client).
+[I 2026-06-12 16:54:01.197 ServerApp] Connecting to kernel cc832ebd-faa3-4195-bdea-73900d8135f4.
+[I 2026-06-14 13:42:04.527 ServerApp] Starting buffering for b6b291b7-7397-40f6-9f7b-a73244f8daa2:f648613f-2566-4955-9d06-b514478135d7
+[I 2026-06-14 13:42:04.530 ServerApp] Starting buffering for 2d98b3ac-0940-45f9-b256-567effdecff5:2b32019c-19c5-4b6f-a742-91dfff6aa1bb
+[I 2026-06-14 13:42:04.532 ServerApp] Starting buffering for e750de78-4eae-4ddf-9a08-e039e7eaf48f:50593af4-d237-4d83-9118-fcd68aa313ee
+[I 2026-06-14 13:42:04.534 ServerApp] Starting buffering for 9f2fd0cb-979e-48b9-9b4b-4e177d87e372:bc7071d6-2359-4c40-8114-1d531b89bf09
+[I 2026-06-14 13:42:04.537 ServerApp] Starting buffering for cc832ebd-faa3-4195-bdea-73900d8135f4:c1b05c37-afb3-4b67-bd41-f2a9ce987b97
+[I 2026-06-15 09:08:38.128 ServerApp] 302 GET / (@127.0.0.1) 1.03ms
+[I 2026-06-15 09:08:38.129 ServerApp] 302 GET / (@127.0.0.1) 0.35ms
+[I 2026-06-15 09:08:38.168 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 1.81ms
+[I 2026-06-15 09:08:38.169 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 0.66ms
+[W 2026-06-15 09:08:38.457 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:38.457 ServerApp] 403 GET /api/kernelspecs?1781485718417 (@127.0.0.1) 1.26ms referer=None
+[W 2026-06-15 09:08:38.492 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:38.493 ServerApp] 403 GET /api/kernelspecs?1781485718457 (@127.0.0.1) 1.50ms referer=None
+[W 2026-06-15 09:08:38.630 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:38.631 ServerApp] 403 GET /api/kernels?1781485718429 (@127.0.0.1) 1.48ms referer=None
+[W 2026-06-15 09:08:38.632 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:38.633 ServerApp] 403 GET /api/kernelspecs?1781485718438 (@127.0.0.1) 1.48ms referer=None
+[W 2026-06-15 09:08:38.634 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:38.634 ServerApp] 403 GET /api/kernels?1781485718446 (@127.0.0.1) 1.38ms referer=None
+[W 2026-06-15 09:08:38.638 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:38.638 ServerApp] 403 GET /api/kernels?1781485718466 (@127.0.0.1) 3.72ms referer=None
+[W 2026-06-15 09:08:38.639 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:38.639 ServerApp] 403 GET /api/kernelspecs?1781485718474 (@127.0.0.1) 3.94ms referer=None
+[W 2026-06-15 09:08:38.639 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:38.639 ServerApp] 403 GET /api/kernels?1781485718482 (@127.0.0.1) 4.20ms referer=None
+[W 2026-06-15 09:08:38.640 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:38.640 ServerApp] 403 GET /api/kernels?1781485718517 (@127.0.0.1) 4.46ms referer=None
+[W 2026-06-15 09:08:38.640 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:38.641 ServerApp] 403 GET /api/sessions?1781485718528 (@127.0.0.1) 4.78ms referer=None
+[W 2026-06-15 09:08:38.641 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:38.641 ServerApp] 403 GET /api/kernels?1781485718536 (@127.0.0.1) 5.03ms referer=None
+[W 2026-06-15 09:08:38.641 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:38.642 ServerApp] 403 GET /api/sessions?1781485718545 (@127.0.0.1) 5.31ms referer=None
+[W 2026-06-15 09:08:38.642 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:38.642 ServerApp] 403 GET /api/kernels?1781485718553 (@127.0.0.1) 5.59ms referer=None
+[W 2026-06-15 09:08:38.642 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:38.643 ServerApp] 403 GET /api/sessions?1781485718563 (@127.0.0.1) 5.87ms referer=None
+[W 2026-06-15 09:08:38.643 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:38.643 ServerApp] 403 GET /api/kernels?1781485718572 (@127.0.0.1) 6.16ms referer=None
+[W 2026-06-15 09:08:38.643 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:38.644 ServerApp] 403 GET /api/sessions?1781485718582 (@127.0.0.1) 6.42ms referer=None
+[W 2026-06-15 09:08:38.644 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:38.644 ServerApp] 403 GET /api/kernelspecs?1781485718615 (@127.0.0.1) 6.60ms referer=None
+[W 2026-06-15 09:08:38.645 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:38.645 ServerApp] 403 GET /api/kernelspecs?1781485718607 (@127.0.0.1) 0.74ms referer=None
+[W 2026-06-15 09:08:38.730 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:38.730 ServerApp] 403 GET /api/kernelspecs?1781485718638 (@127.0.0.1) 1.56ms referer=None
+[I 2026-06-15 09:08:38.732 ServerApp] 302 GET / (@127.0.0.1) 0.88ms
+[I 2026-06-15 09:08:38.732 ServerApp] 302 GET / (@127.0.0.1) 0.82ms
+[I 2026-06-15 09:08:38.773 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 0.70ms
+[I 2026-06-15 09:08:38.774 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 0.45ms
+[W 2026-06-15 09:08:38.848 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:38.848 ServerApp] 403 GET /api/kernelspecs?1781485718815 (@127.0.0.1) 1.12ms referer=None
+[W 2026-06-15 09:08:38.877 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:38.877 ServerApp] 403 GET /api/kernelspecs?1781485718848 (@127.0.0.1) 1.12ms referer=None
+[W 2026-06-15 09:08:39.227 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:39.228 ServerApp] 403 GET /api/kernels?1781485718825 (@127.0.0.1) 1.55ms referer=None
+[W 2026-06-15 09:08:39.229 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:39.230 ServerApp] 403 GET /api/kernelspecs?1781485718832 (@127.0.0.1) 1.49ms referer=None
+[W 2026-06-15 09:08:39.231 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:39.232 ServerApp] 403 GET /api/kernels?1781485718839 (@127.0.0.1) 1.90ms referer=None
+[W 2026-06-15 09:08:39.232 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:39.233 ServerApp] 403 GET /api/kernels?1781485718855 (@127.0.0.1) 2.48ms referer=None
+[W 2026-06-15 09:08:39.233 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:39.234 ServerApp] 403 GET /api/kernelspecs?1781485718861 (@127.0.0.1) 3.20ms referer=None
+[W 2026-06-15 09:08:39.236 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:39.236 ServerApp] 403 GET /api/kernels?1781485718868 (@127.0.0.1) 2.13ms referer=None
+[W 2026-06-15 09:08:39.237 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:39.237 ServerApp] 403 GET /api/kernels?1781485718876 (@127.0.0.1) 2.42ms referer=None
+[W 2026-06-15 09:08:39.237 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:39.237 ServerApp] 403 GET /api/sessions?1781485718883 (@127.0.0.1) 2.82ms referer=None
+[W 2026-06-15 09:08:39.238 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:39.239 ServerApp] 403 GET /api/kernels?1781485718890 (@127.0.0.1) 4.47ms referer=None
+[W 2026-06-15 09:08:39.240 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:39.240 ServerApp] 403 GET /api/sessions?1781485718904 (@127.0.0.1) 5.59ms referer=None
+[W 2026-06-15 09:08:39.241 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:39.241 ServerApp] 403 GET /api/kernels?1781485718912 (@127.0.0.1) 6.01ms referer=None
+[W 2026-06-15 09:08:39.241 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:39.242 ServerApp] 403 GET /api/sessions?1781485718919 (@127.0.0.1) 6.38ms referer=None
+[W 2026-06-15 09:08:39.242 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:39.242 ServerApp] 403 GET /api/kernels?1781485718926 (@127.0.0.1) 6.77ms referer=None
+[W 2026-06-15 09:08:39.242 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:39.243 ServerApp] 403 GET /api/sessions?1781485718932 (@127.0.0.1) 7.14ms referer=None
+[W 2026-06-15 09:08:39.245 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:39.245 ServerApp] 403 GET /api/kernelspecs?1781485719200 (@127.0.0.1) 0.90ms referer=None
+[W 2026-06-15 09:08:39.258 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:39.259 ServerApp] 403 GET /api/kernelspecs?1781485719208 (@127.0.0.1) 1.52ms referer=None
+[W 2026-06-15 09:08:39.272 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:08:39.273 ServerApp] 403 GET /api/kernelspecs?1781485719241 (@127.0.0.1) 0.93ms referer=None
+[I 2026-06-15 09:11:22.505 ServerApp] 302 GET / (@127.0.0.1) 0.85ms
+[I 2026-06-15 09:11:22.506 ServerApp] 302 GET / (@127.0.0.1) 0.53ms
+[I 2026-06-15 09:11:23.319 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 0.99ms
+[I 2026-06-15 09:11:23.320 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 0.68ms
+[W 2026-06-15 09:11:23.436 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.436 ServerApp] 403 GET /api/kernelspecs?1781485883407 (@127.0.0.1) 0.91ms referer=None
+[W 2026-06-15 09:11:23.493 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.493 ServerApp] 403 GET /api/kernelspecs?1781485883464 (@127.0.0.1) 0.89ms referer=None
+[W 2026-06-15 09:11:23.535 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.536 ServerApp] 403 GET /api/kernels?1781485883415 (@127.0.0.1) 3.25ms referer=None
+[W 2026-06-15 09:11:23.536 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.536 ServerApp] 403 GET /api/kernelspecs?1781485883421 (@127.0.0.1) 3.41ms referer=None
+[W 2026-06-15 09:11:23.537 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.537 ServerApp] 403 GET /api/kernels?1781485883428 (@127.0.0.1) 3.61ms referer=None
+[W 2026-06-15 09:11:23.537 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.537 ServerApp] 403 GET /api/kernels?1781485883436 (@127.0.0.1) 3.82ms referer=None
+[W 2026-06-15 09:11:23.538 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.538 ServerApp] 403 GET /api/sessions?1781485883443 (@127.0.0.1) 4.05ms referer=None
+[W 2026-06-15 09:11:23.538 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.539 ServerApp] 403 GET /api/kernels?1781485883450 (@127.0.0.1) 4.31ms referer=None
+[W 2026-06-15 09:11:23.539 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.539 ServerApp] 403 GET /api/sessions?1781485883456 (@127.0.0.1) 4.61ms referer=None
+[W 2026-06-15 09:11:23.539 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.540 ServerApp] 403 GET /api/kernels?1781485883470 (@127.0.0.1) 4.89ms referer=None
+[W 2026-06-15 09:11:23.540 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.540 ServerApp] 403 GET /api/kernelspecs?1781485883476 (@127.0.0.1) 5.17ms referer=None
+[W 2026-06-15 09:11:23.541 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.541 ServerApp] 403 GET /api/kernels?1781485883484 (@127.0.0.1) 0.77ms referer=None
+[W 2026-06-15 09:11:23.543 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.543 ServerApp] 403 GET /api/kernelspecs?1781485883499 (@127.0.0.1) 1.56ms referer=None
+[W 2026-06-15 09:11:23.544 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.544 ServerApp] 403 GET /api/kernels?1781485883505 (@127.0.0.1) 1.83ms referer=None
+[W 2026-06-15 09:11:23.544 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.545 ServerApp] 403 GET /api/sessions?1781485883511 (@127.0.0.1) 2.17ms referer=None
+[W 2026-06-15 09:11:23.545 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.545 ServerApp] 403 GET /api/kernels?1781485883517 (@127.0.0.1) 2.46ms referer=None
+[W 2026-06-15 09:11:23.545 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.546 ServerApp] 403 GET /api/sessions?1781485883524 (@127.0.0.1) 2.73ms referer=None
+[I 2026-06-15 09:11:23.569 ServerApp] 302 GET / (@127.0.0.1) 1.23ms
+[I 2026-06-15 09:11:23.569 ServerApp] 302 GET / (@127.0.0.1) 1.16ms
+[W 2026-06-15 09:11:23.571 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.572 ServerApp] 403 GET /api/kernelspecs?1781485883531 (@127.0.0.1) 1.99ms referer=None
+[W 2026-06-15 09:11:23.572 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.573 ServerApp] 403 GET /api/kernelspecs?1781485883542 (@127.0.0.1) 2.63ms referer=None
+[I 2026-06-15 09:11:23.583 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 1.20ms
+[I 2026-06-15 09:11:23.584 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 1.31ms
+[W 2026-06-15 09:11:23.633 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.633 ServerApp] 403 GET /api/kernelspecs?1781485883606 (@127.0.0.1) 1.26ms referer=None
+[W 2026-06-15 09:11:23.662 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.663 ServerApp] 403 GET /api/kernelspecs?1781485883632 (@127.0.0.1) 1.21ms referer=None
+[W 2026-06-15 09:11:23.721 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.722 ServerApp] 403 GET /api/kernels?1781485883612 (@127.0.0.1) 0.91ms referer=None
+[W 2026-06-15 09:11:23.722 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.722 ServerApp] 403 GET /api/kernelspecs?1781485883618 (@127.0.0.1) 1.13ms referer=None
+[W 2026-06-15 09:11:23.723 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.723 ServerApp] 403 GET /api/kernels?1781485883624 (@127.0.0.1) 0.46ms referer=None
+[W 2026-06-15 09:11:23.736 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.736 ServerApp] 403 GET /api/kernels?1781485883639 (@127.0.0.1) 1.35ms referer=None
+[W 2026-06-15 09:11:23.738 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.739 ServerApp] 403 GET /api/kernelspecs?1781485883649 (@127.0.0.1) 2.00ms referer=None
+[W 2026-06-15 09:11:23.739 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.739 ServerApp] 403 GET /api/kernels?1781485883654 (@127.0.0.1) 2.42ms referer=None
+[W 2026-06-15 09:11:23.740 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.740 ServerApp] 403 GET /api/kernels?1781485883661 (@127.0.0.1) 2.82ms referer=None
+[W 2026-06-15 09:11:23.741 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.741 ServerApp] 403 GET /api/sessions?1781485883667 (@127.0.0.1) 3.28ms referer=None
+[W 2026-06-15 09:11:23.743 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.743 ServerApp] 403 GET /api/kernels?1781485883675 (@127.0.0.1) 1.66ms referer=None
+[W 2026-06-15 09:11:23.743 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.743 ServerApp] 403 GET /api/sessions?1781485883683 (@127.0.0.1) 1.72ms referer=None
+[W 2026-06-15 09:11:23.744 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.744 ServerApp] 403 GET /api/kernels?1781485883690 (@127.0.0.1) 1.79ms referer=None
+[W 2026-06-15 09:11:23.744 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.744 ServerApp] 403 GET /api/sessions?1781485883696 (@127.0.0.1) 1.98ms referer=None
+[W 2026-06-15 09:11:23.744 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.744 ServerApp] 403 GET /api/kernels?1781485883707 (@127.0.0.1) 2.17ms referer=None
+[W 2026-06-15 09:11:23.745 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.745 ServerApp] 403 GET /api/sessions?1781485883713 (@127.0.0.1) 2.37ms referer=None
+[W 2026-06-15 09:11:23.746 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.746 ServerApp] 403 GET /api/kernelspecs?1781485883721 (@127.0.0.1) 0.47ms referer=None
+[W 2026-06-15 09:11:23.754 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.754 ServerApp] 403 GET /api/kernelspecs?1781485883727 (@127.0.0.1) 0.59ms referer=None
+[W 2026-06-15 09:11:23.755 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.755 ServerApp] 403 GET /api/kernelspecs?1781485883744 (@127.0.0.1) 0.48ms referer=None
+[W 2026-06-15 09:11:23.755 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 09:11:23.755 ServerApp] 403 GET /api/kernelspecs?1781485883735 (@127.0.0.1) 0.42ms referer=None
+[I 2026-06-15 14:30:23.025 ServerApp] 302 GET / (@127.0.0.1) 1.80ms
+[I 2026-06-15 14:30:23.026 ServerApp] 302 GET / (@127.0.0.1) 0.55ms
+[I 2026-06-15 14:30:23.059 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 0.98ms
+[I 2026-06-15 14:30:23.060 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 0.49ms
+[W 2026-06-15 14:30:23.173 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:30:23.174 ServerApp] 403 GET /api/kernelspecs?1781505023155 (@127.0.0.1) 1.44ms referer=None
+[W 2026-06-15 14:30:23.188 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:30:23.189 ServerApp] 403 GET /api/kernelspecs?1781505023173 (@127.0.0.1) 1.17ms referer=None
+[W 2026-06-15 14:30:23.390 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:30:23.391 ServerApp] 403 GET /api/kernels?1781505023163 (@127.0.0.1) 1.37ms referer=None
+[W 2026-06-15 14:30:23.391 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:30:23.392 ServerApp] 403 GET /api/kernels?1781505023180 (@127.0.0.1) 0.87ms referer=None
+[W 2026-06-15 14:30:23.413 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:30:23.414 ServerApp] 403 GET /api/kernels?1781505023195 (@127.0.0.1) 1.14ms referer=None
+[W 2026-06-15 14:30:23.415 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:30:23.416 ServerApp] 403 GET /api/sessions?1781505023202 (@127.0.0.1) 1.57ms referer=None
+[W 2026-06-15 14:30:23.416 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:30:23.416 ServerApp] 403 GET /api/kernels?1781505023209 (@127.0.0.1) 1.96ms referer=None
+[W 2026-06-15 14:30:23.417 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:30:23.417 ServerApp] 403 GET /api/sessions?1781505023215 (@127.0.0.1) 2.41ms referer=None
+[W 2026-06-15 14:30:23.428 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:30:23.429 ServerApp] 403 GET /api/kernelspecs?1781505023390 (@127.0.0.1) 0.63ms referer=None
+[W 2026-06-15 14:30:23.429 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:30:23.429 ServerApp] 403 GET /api/kernelspecs?1781505023398 (@127.0.0.1) 0.53ms referer=None
+[I 2026-06-15 14:30:23.465 ServerApp] 302 GET / (@127.0.0.1) 0.31ms
+[I 2026-06-15 14:30:23.467 ServerApp] 302 GET / (@127.0.0.1) 0.28ms
+[I 2026-06-15 14:30:23.511 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 0.50ms
+[I 2026-06-15 14:30:23.553 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 0.47ms
+[W 2026-06-15 14:30:23.611 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:30:23.612 ServerApp] 403 GET /api/kernelspecs?1781505023598 (@127.0.0.1) 0.74ms referer=None
+[W 2026-06-15 14:30:24.646 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:30:24.647 ServerApp] 403 GET /api/kernelspecs?1781505024633 (@127.0.0.1) 1.48ms referer=None
+[W 2026-06-15 14:30:24.654 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:30:24.654 ServerApp] 403 GET /api/kernels?1781505023604 (@127.0.0.1) 0.80ms referer=None
+[W 2026-06-15 14:30:24.655 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:30:24.655 ServerApp] 403 GET /api/kernels?1781505023611 (@127.0.0.1) 0.62ms referer=None
+[W 2026-06-15 14:30:24.683 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:30:24.684 ServerApp] 403 GET /api/sessions?1781505023618 (@127.0.0.1) 1.24ms referer=None
+[W 2026-06-15 14:30:24.830 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:30:24.831 ServerApp] 403 GET /api/kernelspecs?1781505024622 (@127.0.0.1) 1.45ms referer=None
+[W 2026-06-15 14:30:24.833 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:30:24.834 ServerApp] 403 GET /api/kernels?1781505024639 (@127.0.0.1) 2.42ms referer=None
+[W 2026-06-15 14:30:24.834 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:30:24.835 ServerApp] 403 GET /api/kernels?1781505024655 (@127.0.0.1) 2.96ms referer=None
+[W 2026-06-15 14:30:24.835 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:30:24.836 ServerApp] 403 GET /api/sessions?1781505024661 (@127.0.0.1) 3.49ms referer=None
+[W 2026-06-15 14:30:24.836 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:30:24.837 ServerApp] 403 GET /api/kernelspecs?1781505024683 (@127.0.0.1) 3.98ms referer=None
+[I 2026-06-15 14:51:35.710 ServerApp] 302 GET / (@127.0.0.1) 1.48ms
+[I 2026-06-15 14:51:35.711 ServerApp] 302 GET / (@127.0.0.1) 0.50ms
+[I 2026-06-15 14:51:36.660 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 1.00ms
+[I 2026-06-15 14:51:36.661 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 0.42ms
+[W 2026-06-15 14:51:36.735 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:51:36.736 ServerApp] 403 GET /api/kernelspecs?1781506296720 (@127.0.0.1) 1.43ms referer=None
+[W 2026-06-15 14:51:36.771 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:51:36.772 ServerApp] 403 GET /api/kernelspecs?1781506296750 (@127.0.0.1) 1.46ms referer=None
+[W 2026-06-15 14:51:36.801 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:51:36.802 ServerApp] 403 GET /api/kernels?1781506296727 (@127.0.0.1) 3.26ms referer=None
+[W 2026-06-15 14:51:36.802 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:51:36.803 ServerApp] 403 GET /api/kernels?1781506296734 (@127.0.0.1) 3.65ms referer=None
+[W 2026-06-15 14:51:36.803 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:51:36.804 ServerApp] 403 GET /api/sessions?1781506296741 (@127.0.0.1) 3.79ms referer=None
+[W 2026-06-15 14:51:36.804 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:51:36.804 ServerApp] 403 GET /api/kernels?1781506296757 (@127.0.0.1) 3.86ms referer=None
+[W 2026-06-15 14:51:36.807 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:51:36.807 ServerApp] 403 GET /api/kernelspecs?1781506296778 (@127.0.0.1) 0.79ms referer=None
+[W 2026-06-15 14:51:36.808 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:51:36.808 ServerApp] 403 GET /api/kernels?1781506296784 (@127.0.0.1) 1.06ms referer=None
+[W 2026-06-15 14:51:36.809 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:51:36.809 ServerApp] 403 GET /api/sessions?1781506296790 (@127.0.0.1) 1.40ms referer=None
+[W 2026-06-15 14:51:36.823 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:51:36.824 ServerApp] 403 GET /api/kernelspecs?1781506296797 (@127.0.0.1) 1.20ms referer=None
+[I 2026-06-15 14:51:36.825 ServerApp] 302 GET / (@127.0.0.1) 0.41ms
+[I 2026-06-15 14:51:36.825 ServerApp] 302 GET / (@127.0.0.1) 0.29ms
+[I 2026-06-15 14:51:36.842 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 0.95ms
+[I 2026-06-15 14:51:36.843 JupyterNotebookApp] 302 GET /tree? (@127.0.0.1) 0.48ms
+[W 2026-06-15 14:51:36.875 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:51:36.875 ServerApp] 403 GET /api/kernelspecs?1781506296857 (@127.0.0.1) 0.95ms referer=None
+[W 2026-06-15 14:51:36.899 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:51:36.900 ServerApp] 403 GET /api/kernelspecs?1781506296887 (@127.0.0.1) 1.37ms referer=None
+[W 2026-06-15 14:51:36.922 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:51:36.922 ServerApp] 403 GET /api/kernels?1781506296864 (@127.0.0.1) 1.49ms referer=None
+[W 2026-06-15 14:51:36.922 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:51:36.923 ServerApp] 403 GET /api/kernels?1781506296874 (@127.0.0.1) 1.79ms referer=None
+[W 2026-06-15 14:51:36.923 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:51:36.923 ServerApp] 403 GET /api/sessions?1781506296880 (@127.0.0.1) 2.17ms referer=None
+[W 2026-06-15 14:51:36.989 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:51:36.989 ServerApp] 403 GET /api/kernels?1781506296892 (@127.0.0.1) 1.49ms referer=None
+[W 2026-06-15 14:51:36.991 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:51:36.992 ServerApp] 403 GET /api/kernelspecs?1781506296900 (@127.0.0.1) 1.69ms referer=None
+[W 2026-06-15 14:51:36.992 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:51:36.992 ServerApp] 403 GET /api/kernels?1781506296906 (@127.0.0.1) 2.01ms referer=None
+[W 2026-06-15 14:51:36.993 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:51:36.993 ServerApp] 403 GET /api/sessions?1781506296913 (@127.0.0.1) 2.40ms referer=None
+[W 2026-06-15 14:51:36.994 ServerApp] wrote error: 'Forbidden'
+[W 2026-06-15 14:51:36.994 ServerApp] 403 GET /api/kernelspecs?1781506296979 (@127.0.0.1) 0.89ms referer=None
