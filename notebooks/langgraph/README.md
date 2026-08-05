@@ -185,6 +185,23 @@
 5. 理解子图 checkpointer 的 per-invocation / per-thread / stateless 模式
 6. 跑通子图里的 interrupt 和状态查看
 
+### 013 Serving and Adapters
+
+文件：
+
+- `013-serving-adapters.ipynb`
+
+目标：
+
+1. 理解 LangGraph 图本身不是 HTTP 接口，`CompiledStateGraph` 需要被 Web 层适配后才能给前端或业务系统调用
+2. 学会把 FastAPI 请求转换成 LangGraph 的 `input`、`config`、`context`
+3. 理解 `session_id` 和 `thread_id` 的映射关系，以及它们如何影响 checkpointer 读取历史状态
+4. 学会消费 `agent.astream(...)` 的 `messages`、`updates`、`custom` 等 stream mode
+5. 学会把 LangGraph 内部事件转换成前端 SSE 业务事件，例如 `token`、`tool_calls`、`tool_output`、`quick_entries`
+6. 理解 `Command(resume=...)` 如何把 HTTP 请求映射成 LangGraph interrupt 恢复
+7. 区分图编排逻辑、Web 适配逻辑、业务事件协议、可观测性埋点的边界
+8. 对比本仓库 `hb_rs/endpoint.py`：为什么它不是图定义文件，而是 LangGraph Web 适配层
+
 ## 学习原则
 
 1. 先看清状态如何流动，再讨论复杂 agent。
